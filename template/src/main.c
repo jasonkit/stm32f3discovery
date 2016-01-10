@@ -82,7 +82,7 @@ int main(void) {
   LEDThread2Handle = osThreadCreate(osThread(LED4), NULL);
 
   /* Start scheduler    */
-  osKernelStart(NULL, NULL);
+  osKernelStart();
 
   /* We should never get here as control is now taken by the scheduler */
   for (;;)
