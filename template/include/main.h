@@ -1,9 +1,9 @@
 /**
   ******************************************************************************
-  * @file    FreeRTOS\FreeRTOS_ThreadCreation\Inc\main.h
+  * @file    FreeRTOS/FreeRTOS_ThreadCreation/Inc/main.h
   * @author  MCD Application Team
-  * @version V1.2.0
-  * @date    19-June-2015
+  * @version V1.4.0
+  * @date    13-November-2015
   * @brief   This file contains all the functions prototypes for the main.c
   *          file.
   ******************************************************************************
@@ -51,4 +51,3 @@ extern "C" {
 
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
-

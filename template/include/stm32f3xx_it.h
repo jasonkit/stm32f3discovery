@@ -1,12 +1,11 @@
 /**
   ******************************************************************************
-  * @file    FreeRTOS\FreeRTOS_ThreadCreation\Inc\stm32f3xx_it.h
+  * @file    FreeRTOS/FreeRTOS_ThreadCreation/Inc/stm32f3xx_it.h
   * @author  MCD Application Team
-  * @version V1.2.0
-  * @date    19-June-2015
+  * @version V1.4.0
+  * @date    13-November-2015
   * @brief   This file contains the headers of the interrupt handlers.
   ******************************************************************************
-  * @attention
   *
   * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
   *
@@ -44,9 +43,7 @@ void HardFault_Handler(void);
 void MemManage_Handler(void);
 void BusFault_Handler(void);
 void UsageFault_Handler(void);
-void SVC_Handler(void);
 void DebugMon_Handler(void);
-void PendSV_Handler(void);
 void SysTick_Handler(void);
 
 #ifdef __cplusplus
