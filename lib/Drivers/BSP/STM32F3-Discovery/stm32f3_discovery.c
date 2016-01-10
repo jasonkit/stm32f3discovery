@@ -2,14 +2,14 @@
   ******************************************************************************
   * @file    stm32f3_discovery.c
   * @author  MCD Application Team
-  * @version V2.1.1
-  * @date    30-December-2014
+  * @version V2.1.2
+  * @date    13-November-2015
   * @brief   This file provides set of firmware functions to manage Leds and
   *          push-button available on STM32F3-DISCOVERY Kit from STMicroelectronics.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -47,7 +47,7 @@
   * @{
   */   
     
-/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL 
+/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL STM32F3_DISCOVERY_LOW_LEVEL
   * @brief This file provides set of firmware functions to manage Leds and push-button
   *        available on STM32F3-Discovery Kit from STMicroelectronics.
   * @{
@@ -65,11 +65,11 @@
   * @{
   */ 
 /**
- * @brief STM32F3 DISCOVERY BSP Driver version number V2.1.1
+ * @brief STM32F3 DISCOVERY BSP Driver version number V2.1.2
    */
 #define __STM32F3_DISCO_BSP_VERSION_MAIN   (0x02) /*!< [31:24] main version */
 #define __STM32F3_DISCO_BSP_VERSION_SUB1   (0x01) /*!< [23:16] sub1 version */
-#define __STM32F3_DISCO_BSP_VERSION_SUB2   (0x01) /*!< [15:8]  sub2 version */
+#define __STM32F3_DISCO_BSP_VERSION_SUB2   (0x02) /*!< [15:8]  sub2 version */
 #define __STM32F3_DISCO_BSP_VERSION_RC     (0x00) /*!< [7:0]  release candidate */
 #define __STM32F3_DISCO_BSP_VERSION        ((__STM32F3_DISCO_BSP_VERSION_MAIN << 24)\
                                             |(__STM32F3_DISCO_BSP_VERSION_SUB1 << 16)\
@@ -161,7 +161,6 @@ uint8_t   COMPASSACCELERO_IO_Read(uint16_t DeviceAddr, uint8_t RegisterAddr);
 
 /**
   * @brief  This method returns the STM32F3 DISCOVERY BSP Driver revision
-  * @param  None
   * @retval version : 0xXYZR (8bits for each decimal, R for RC)
   */
 uint32_t BSP_GetVersion(void)
@@ -169,7 +168,7 @@ uint32_t BSP_GetVersion(void)
   return __STM32F3_DISCO_BSP_VERSION;
 }
 
-/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL_LED_Functions
+/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL_LED_Functions STM32F3_DISCOVERY_LOW_LEVEL_LED_Functions
   * @{
   */ 
 
@@ -198,7 +197,7 @@ void BSP_LED_Init(Led_TypeDef Led)
   GPIO_InitStruct.Pin = LED_PIN[Led];
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   
   HAL_GPIO_Init(LED_PORT[Led], &GPIO_InitStruct);
   
@@ -266,7 +265,7 @@ void BSP_LED_Toggle(Led_TypeDef Led)
   * @}
   */ 
 
-/** @defgroup STM32F3348_DISCOVERY_LOW_LEVEL_BUTTON_Functions
+/** @defgroup STM32F3348_DISCOVERY_LOW_LEVEL_BUTTON_Functions STM32F3348_DISCOVERY_LOW_LEVEL_BUTTON_Functions
   * @{
   */ 
 
@@ -274,7 +273,7 @@ void BSP_LED_Toggle(Led_TypeDef Led)
   * @brief  Configures Push Button GPIO and EXTI Line.
   * @param  Button: Specifies the Button to be configured.
   *   This parameter should be: BUTTON_USER
-  * @param  Button_Mode: Specifies Button mode.
+  * @param  ButtonMode: Specifies Button mode.
   *   This parameter can be one of following parameters:   
   *     @arg BUTTON_MODE_GPIO: Button will be used as simple IO 
   *     @arg BUTTON_MODE_EXTI: Button will be connected to EXTI line with interrupt
@@ -287,7 +286,7 @@ void BSP_PB_Init(Button_TypeDef Button, ButtonMode_TypeDef ButtonMode)
 
   /* Enable the BUTTON Clock */
   BUTTONx_GPIO_CLK_ENABLE(Button);
-  __SYSCFG_CLK_ENABLE();
+  __HAL_RCC_SYSCFG_CLK_ENABLE();
 
   if (ButtonMode == BUTTON_MODE_GPIO)
   {
@@ -295,7 +294,7 @@ void BSP_PB_Init(Button_TypeDef Button, ButtonMode_TypeDef ButtonMode)
     GPIO_InitStruct.Pin = BUTTON_PIN[Button];
     GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
     GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-    GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
     HAL_GPIO_Init(BUTTON_PORT[Button], &GPIO_InitStruct);
   }
 
@@ -304,7 +303,7 @@ void BSP_PB_Init(Button_TypeDef Button, ButtonMode_TypeDef ButtonMode)
     /* Configure Button pin as input with External interrupt */
     GPIO_InitStruct.Pin = BUTTON_PIN[Button];
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
     GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING; 
     HAL_GPIO_Init(BUTTON_PORT[Button], &GPIO_InitStruct);
 
@@ -352,7 +351,7 @@ static void I2Cx_MspInit(I2C_HandleTypeDef *hi2c)
   GPIO_InitStructure.Pin = (DISCOVERY_I2Cx_SDA_PIN | DISCOVERY_I2Cx_SCL_PIN);
   GPIO_InitStructure.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStructure.Pull = GPIO_PULLDOWN;
-  GPIO_InitStructure.Speed = GPIO_SPEED_HIGH;
+  GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStructure.Alternate = DISCOVERY_I2Cx_AF;
   HAL_GPIO_Init(DISCOVERY_I2Cx_GPIO_PORT, &GPIO_InitStructure);
 
@@ -362,7 +361,6 @@ static void I2Cx_MspInit(I2C_HandleTypeDef *hi2c)
 
 /**
   * @brief Discovery I2Cx Bus initialization
-  * @param None
   * @retval None
   */
 static void I2Cx_Init(void)
@@ -372,10 +370,10 @@ static void I2Cx_Init(void)
     I2cHandle.Instance = DISCOVERY_I2Cx;
     I2cHandle.Init.OwnAddress1 =  ACCELERO_I2C_ADDRESS;
     I2cHandle.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-    I2cHandle.Init.DualAddressMode = I2C_DUALADDRESS_DISABLED;
+    I2cHandle.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
     I2cHandle.Init.OwnAddress2 = 0;
-    I2cHandle.Init.GeneralCallMode = I2C_GENERALCALL_DISABLED;
-    I2cHandle.Init.NoStretchMode = I2C_NOSTRETCH_DISABLED;	
+    I2cHandle.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+    I2cHandle.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;	
 
     /* Init the I2C */
     I2Cx_MspInit(&I2cHandle);
@@ -429,7 +427,6 @@ static uint8_t I2Cx_ReadData(uint16_t Addr, uint8_t Reg)
 
 /**
   * @brief I2C3 error treatment function
-  * @param None
   * @retval None
   */
 static void I2Cx_Error (void)
@@ -447,7 +444,6 @@ static void I2Cx_Error (void)
 /******************************* SPI Routines**********************************/
 /**
   * @brief SPIx Bus initialization
-  * @param None
   * @retval None
   */
 static void SPIx_Init(void)
@@ -466,12 +462,12 @@ static void SPIx_Init(void)
     SpiHandle.Init.Direction = SPI_DIRECTION_2LINES; 
     SpiHandle.Init.CLKPhase = SPI_PHASE_1EDGE;
     SpiHandle.Init.CLKPolarity = SPI_POLARITY_LOW;
-    SpiHandle.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLED;
+    SpiHandle.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
     SpiHandle.Init.CRCPolynomial = 7;
     SpiHandle.Init.DataSize = SPI_DATASIZE_8BIT;
     SpiHandle.Init.FirstBit = SPI_FIRSTBIT_MSB;
     SpiHandle.Init.NSS = SPI_NSS_SOFT;
-    SpiHandle.Init.TIMode = SPI_TIMODE_DISABLED;
+    SpiHandle.Init.TIMode = SPI_TIMODE_DISABLE;
     SpiHandle.Init.Mode = SPI_MODE_MASTER;
 
     SPIx_MspInit(&SpiHandle);
@@ -503,7 +499,6 @@ static uint8_t SPIx_WriteRead(uint8_t Byte)
 
 /**
   * @brief SPIx error treatment function
-  * @param None
   * @retval None
   */
 static void SPIx_Error (void)
@@ -535,7 +530,7 @@ static void SPIx_MspInit(SPI_HandleTypeDef *hspi)
   GPIO_InitStructure.Pin = (DISCOVERY_SPIx_SCK_PIN | DISCOVERY_SPIx_MOSI_PIN | DISCOVERY_SPIx_MISO_PIN);
   GPIO_InitStructure.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStructure.Pull  = GPIO_NOPULL; /* or GPIO_PULLDOWN */
-  GPIO_InitStructure.Speed = GPIO_SPEED_HIGH;
+  GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStructure.Alternate = DISCOVERY_SPIx_AF;
   HAL_GPIO_Init(DISCOVERY_SPIx_GPIO_PORT, &GPIO_InitStructure);      
 }
@@ -547,7 +542,6 @@ static void SPIx_MspInit(SPI_HandleTypeDef *hspi)
 /********************************* LINK GYROSCOPE *****************************/
 /**
   * @brief  Configures the GYROSCOPE SPI interface.
-  * @param  None
   * @retval None
   */
 void GYRO_IO_Init(void)
@@ -560,7 +554,7 @@ void GYRO_IO_Init(void)
   GPIO_InitStructure.Pin = GYRO_CS_PIN;
   GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStructure.Pull  = GPIO_NOPULL;
-  GPIO_InitStructure.Speed = GPIO_SPEED_HIGH;
+  GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GYRO_CS_GPIO_PORT, &GPIO_InitStructure);
 
   /* Deselect : Chip Select high */
@@ -570,7 +564,7 @@ void GYRO_IO_Init(void)
   GYRO_INT_GPIO_CLK_ENABLE();
   GPIO_InitStructure.Pin = GYRO_INT1_PIN | GYRO_INT2_PIN;
   GPIO_InitStructure.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStructure.Speed = GPIO_SPEED_HIGH;
+  GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStructure.Pull= GPIO_NOPULL;
   HAL_GPIO_Init(GYRO_INT_GPIO_PORT, &GPIO_InitStructure);
   
@@ -653,7 +647,6 @@ void GYRO_IO_Read(uint8_t* pBuffer, uint8_t ReadAddr, uint16_t NumByteToRead)
 /********************************* LINK ACCELEROMETER *****************************/
 /**
   * @brief  Configures COMPASS / ACCELEROMETER I2C interface.
-  * @param  None
   * @retval None
   */
 void COMPASSACCELERO_IO_Init(void)
@@ -670,7 +663,7 @@ void COMPASSACCELERO_IO_Init(void)
   GPIO_InitStructure.Pin = ACCELERO_DRDY_PIN;
   GPIO_InitStructure.Mode = GPIO_MODE_INPUT;
   GPIO_InitStructure.Pull  = GPIO_NOPULL;
-  GPIO_InitStructure.Speed = GPIO_SPEED_HIGH;
+  GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(ACCELERO_DRDY_GPIO_PORT, &GPIO_InitStructure);
   
   /* Enable and set Button EXTI Interrupt to the lowest priority */
@@ -680,7 +673,7 @@ void COMPASSACCELERO_IO_Init(void)
   /* Configure GPIO PINs to detect Interrupts */
   GPIO_InitStructure.Pin = ACCELERO_INT1_PIN | ACCELERO_INT2_PIN;
   GPIO_InitStructure.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStructure.Speed = GPIO_SPEED_HIGH;
+  GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStructure.Pull  = GPIO_NOPULL;
   HAL_GPIO_Init(ACCELERO_INT_GPIO_PORT, &GPIO_InitStructure);
   
@@ -689,7 +682,6 @@ void COMPASSACCELERO_IO_Init(void)
 
 /**
   * @brief  Configures COMPASS / ACCELERO click IT
-  * @param  None
   * @retval None
   */
 void COMPASSACCELERO_IO_ITConfig(void)
@@ -702,7 +694,7 @@ void COMPASSACCELERO_IO_ITConfig(void)
   /* Configure GPIO PINs to detect Interrupts */
   GPIO_InitStructure.Pin = ACCELERO_INT1_PIN | ACCELERO_INT2_PIN;
   GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStructure.Speed = GPIO_SPEED_HIGH;
+  GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStructure.Pull  = GPIO_NOPULL;
   HAL_GPIO_Init(ACCELERO_INT_GPIO_PORT, &GPIO_InitStructure);
   
@@ -756,4 +748,4 @@ uint8_t COMPASSACCELERO_IO_Read(uint16_t DeviceAddr, uint8_t RegisterAddr)
   * @}
   */ 
 
-/******************* (C) COPYRIGHT 2014 STMicroelectronics *****END OF FILE****/
+/******************* (C) COPYRIGHT 2015 STMicroelectronics *****END OF FILE****/

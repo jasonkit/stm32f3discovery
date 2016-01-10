@@ -2,14 +2,14 @@
   ******************************************************************************
   * @file    stm32f3_discovery_gyroscope.c
   * @author  MCD Application Team
-  * @version V2.1.1
-  * @date    30-December-2014
+  * @version V2.1.2
+  * @date    13-November-2015
   * @brief   This file provides a set of functions needed to manage the l3gd20
   *          MEMS accelerometer available on STM32F3-Discovery Kit.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -98,7 +98,6 @@ static GYRO_DrvTypeDef *GyroscopeDrv;
 
 /**
   * @brief  Set GYROSCOPE Initialization.
-  * @param  None
   * @retval GYRO_OK if no problem during initialization
   */
 uint8_t BSP_GYRO_Init(void)
@@ -154,7 +153,6 @@ uint8_t BSP_GYRO_Init(void)
 
 /**
   * @brief  Read ID of Gyroscope component
-  * @param  None
   * @retval ID
   */
 uint8_t BSP_GYRO_ReadID(void)
@@ -170,7 +168,6 @@ uint8_t BSP_GYRO_ReadID(void)
 
 /**
   * @brief  Reboot memory content of GYROSCOPE
-  * @param  None
   * @retval None
   */
 void BSP_GYRO_Reset(void)
