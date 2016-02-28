@@ -12,6 +12,10 @@ static void SystemClock_Config(void);
 static void Error_Handler(int);
 static void main_task(void const *argument);
 
+static void wakeMainTask(void) {
+  osSignalSet(main_task_handle, 0x01);
+}
+
 int main(void) {
   HAL_Init();
 
@@ -30,7 +34,7 @@ int main(void) {
   uart_task_init();
 
   /* Init uart */
-  if (uart_context_init(UART_ID_IN_USE, &uartContext, 115200) != UART_OK) {
+  if (uart_context_init(UART_ID_IN_USE, &uartContext, 115200, 16, wakeMainTask) != UART_OK) {
     Error_Handler(3);
   }
 
@@ -46,7 +50,9 @@ int main(void) {
 int gCnt = 0;
 
 static void main_task(void const *argument) {
+  struct UartContext *ctxt = gUartContexts[UART_ID_IN_USE - 1];
   for (;;) {
+    /*
     char buf[5];
     buf[0] = (gCnt / 1000) + '0';
     buf[1] = ((gCnt % 1000) / 100) + '0';
@@ -55,8 +61,17 @@ static void main_task(void const *argument) {
     buf[4] = '\r';
     uart_send(UART_ID_IN_USE, buf, 5);
     gCnt++;
+    */
+    if (!ringbuf_avaliable(&(ctxt->rxBuf), true)) {
+      osSignalWait(0x01, osWaitForever);
+    }
+
+    uint8_t buf[16];
+    ringbuf_read(&(ctxt->rxBuf), &buf, 16);
+    uart_send(UART_ID_IN_USE, &buf, 16);
+
     BSP_LED_Toggle(LED10);
-    osDelay(50);
+    //osDelay(50);
   }
 }
 

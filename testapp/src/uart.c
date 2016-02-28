@@ -144,8 +144,10 @@ static USART_TypeDef *uart_instance_lookup(uint8_t uid) {
       return NULL;
   }
 }
-
-enum UartReturnVal uart_context_init(uint8_t uid, struct UartContext *ctxt, uint32_t baudrate) {
+/*
+ * rxChunkSize must align to ringbuf size (default ringbuf size is 1024)
+ * */
+enum UartReturnVal uart_context_init(uint8_t uid, struct UartContext *ctxt, uint32_t baudrate, uint16_t rxChunkSize, void (*rxCallback)(void)) {
   USART_TypeDef *instance = uart_instance_lookup(uid);
 
   if (!instance) {
@@ -166,6 +168,11 @@ enum UartReturnVal uart_context_init(uint8_t uid, struct UartContext *ctxt, uint
 
   ctxt->txBuf.rd = ctxt->txBuf.wr = 0;
   ctxt->rxBuf.rd = ctxt->rxBuf.wr = 0;
+
+  ctxt->rxChunkSize = rxChunkSize;
+  ctxt->rxNextWr = 0;
+  ctxt->rxOverflow = false;
+  ctxt->rxCallback = rxCallback;
 
   gUartContexts[uid - 1] = ctxt;
 
@@ -202,23 +209,69 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
   uint8_t uid = uart_id_lookup(huart->Instance);
+  struct UartContext *ctxt = gUartContexts[uid - 1];
+  HAL_UART_Receive_IT(&(ctxt->handle), &(ctxt->rxBuf.buf[ctxt->rxNextWr]), ctxt->rxChunkSize);
+  ctxt->rxNextWr += ctxt->rxChunkSize;
+  if (ctxt->rxNextWr >= sizeof(ctxt->rxBuf.buf)) {
+    ctxt->rxNextWr = 0;
+  }
+  osSignalSet(uart_task_handle, 0x01);
 }
 
 void HAL_UARTEx_WakeupCallback(UART_HandleTypeDef *huart) {
 }
 
 static void uart_task(void const *argument) {
+  for (int i = 0; i < UART_NUM_DEVICE; i++) {
+    struct UartContext *ctxt = gUartContexts[i];
+    if (ctxt == NULL) {
+      continue;
+    }
+    HAL_UART_Receive_IT(&(ctxt->handle), &(ctxt->rxBuf.buf[ctxt->rxNextWr]), ctxt->rxChunkSize);
+    ctxt->rxNextWr += ctxt->rxChunkSize;
+  }
+
   for (;;) {
     osSignalWait(0x01, osWaitForever);
     BSP_LED_Toggle(LED9);
     for (int i = 0; i < UART_NUM_DEVICE; i++) {
-      if (gUartContexts[i] == NULL) {
+      struct UartContext *ctxt = gUartContexts[i];
+      if (ctxt == NULL) {
         continue;
       }
 
-      struct UartContext *ctxt = gUartContexts[i];
-
       BSP_LED_Toggle(LED8);
+
+      uint16_t nextWr = ctxt->rxBuf.wr + ctxt->rxChunkSize;
+      if (nextWr >= sizeof(ctxt->rxBuf.buf)) {
+        nextWr = 0;
+      }
+
+      while (ctxt->rxNextWr != nextWr) {
+        osMutexWait(ctxt->rxBuf.mutex, osWaitForever);
+        uint16_t oldWr = ctxt->rxBuf.wr;
+        ctxt->rxBuf.wr += ctxt->rxChunkSize;
+        if (ctxt->rxBuf.wr >= sizeof(ctxt->rxBuf.buf)) {
+          ctxt->rxBuf.wr = 0;
+        }
+
+        if (((oldWr < ctxt->rxBuf.rd) && (ctxt->rxBuf.wr >= ctxt->rxBuf.rd)) ||
+            (ctxt->rxBuf.wr == 0) && (ctxt->rxBuf.rd == 0)) {
+          ctxt->rxOverflow++;
+        }
+
+        osMutexRelease(ctxt->rxBuf.mutex);
+
+        if (ctxt->rxCallback != NULL) {
+          ctxt->rxCallback();
+        }
+
+        nextWr = ctxt->rxBuf.wr + ctxt->rxChunkSize;
+        if (nextWr >= sizeof(ctxt->rxBuf.buf)) {
+          nextWr = 0;
+        }
+      }
+
       if (ringbuf_avaliable(&(ctxt->txBuf), true) > 0) {
         uint16_t sentSize = 0;
         uint16_t curRd = ctxt->txBuf.rd;
@@ -234,11 +287,11 @@ static void uart_task(void const *argument) {
         }
         osMutexRelease(ctxt->txBuf.mutex);
 
-        BSP_LED_Toggle(LED6);
+        BSP_LED_Toggle(LED5);
         HAL_UART_Transmit_IT(&(ctxt->handle), &(ctxt->txBuf.buf[curRd]), sentSize);
       }
     }
-    BSP_LED_Toggle(LED5);
+    BSP_LED_Toggle(LED4);
   }
 }
 

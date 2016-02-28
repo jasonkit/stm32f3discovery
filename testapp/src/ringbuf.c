@@ -73,7 +73,7 @@ int ringbuf_read(struct RingBuf* rbuf, void* data, size_t size) {
     }
 
     uint16_t offset = 0;
-    if (rbuf->wr + size > RINGBUF_SIZE) {
+    if (rbuf->rd + size > RINGBUF_SIZE) {
       uint16_t chunk_size = RINGBUF_SIZE - rbuf->rd;
       memcpy(data, &rbuf->buf[rbuf->rd], chunk_size);
       size -= chunk_size;

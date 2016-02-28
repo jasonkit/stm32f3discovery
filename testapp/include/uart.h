@@ -21,10 +21,16 @@ struct UartContext {
   struct RingBuf txBuf;
   struct RingBuf rxBuf;
   osMutexId uartMutex;
+  uint16_t rxChunkSize;
+  uint16_t rxNextWr;
+  uint8_t rxOverflow;
+  void (*rxCallback)(void);
 };
 
+extern struct UartContext* gUartContexts[UART_NUM_DEVICE];
+
 void uart_task_init();
-enum UartReturnVal uart_context_init(uint8_t uid, struct UartContext* ctxt, uint32_t baudrate);
+enum UartReturnVal uart_context_init(uint8_t uid, struct UartContext* ctxt, uint32_t baudrate, uint16_t rxChunkSize, void (*rxCallback)(void));
 enum UartReturnVal uart_send(uint8_t uid, void* pData, size_t size);
 
 // Interrupt
