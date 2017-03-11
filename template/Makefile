@@ -1,6 +1,8 @@
 TARGET := demo
 TOOLCHAIN := arm-none-eabi
 
+CUSTOM_DEFINE:=
+
 FREERTOS_MODULE := tasks queue list timers
 HAL_MODULE := cortex dma flash gpio rcc rcc_ex tim tim_ex
 BSP_MODULE :=
@@ -59,7 +61,7 @@ BSP_CFILES += $(addprefix $(BSP_PATH)/STM32F3-Discovery/stm32f3_discovery_,$(add
 CC := $(shell { which $(TOOLCHAIN)-gcc; } 2>/dev/null)
 GDB := $(shell { which $(TOOLCHAIN)-gdb; } 2>/dev/null)
 OBJCOPY := $(shell { which $(TOOLCHAIN)-objcopy; } 2>/dev/null)
-CFLAGS := -D STM32F303xC -g -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=softfp  -Os -ffunction-sections -fdata-sections -std=c99 $(subst $(space), -I,$(INC_PATH))
+CFLAGS := -D STM32F303xC $(CUSTOM_DEFINE) -g -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=softfp  -Os -ffunction-sections -fdata-sections -std=c99 $(subst $(space), -I,$(INC_PATH))
 LDFLAGS := -Wl,--gc-sections -Wl,-Map=$(BUILD_DIR)/$(TARGET).map -T $(COMMON_DIR)/stm32f303vc.ld
 
 vpath %.ld $(COMMON_DIR)
