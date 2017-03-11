@@ -2,7 +2,11 @@ TARGET := demo
 TOOLCHAIN := arm-none-eabi
 
 FREERTOS_MODULE := tasks queue list timers
-HAL_MODULE := cortex gpio rcc rcc_ex
+HAL_MODULE := cortex dma flash gpio rcc rcc_ex tim tim_ex
+BSP_MODULE :=
+
+# FreeRTOS memory management, ref: http://www.freertos.org/a00111.html
+FREERTOS_MEMMANG := heap_1
 
 BUILD_DIR := build
 
@@ -14,41 +18,42 @@ INC_PATH :=
 INC_PATH += ./include
 
 # ---
+
+GCC_ARCH := ARM_CM4F
+
 space :=
 space +=
 
 COMMON_DIR := lib/common
 INC_PATH += $(COMMON_DIR)/include
 
-# FreeRTOS setting
-FREERTOS_PATH := lib/FreeRTOS/Source
-
-INC_PATH += $(FREERTOS_PATH)/include
-INC_PATH += $(FREERTOS_PATH)/portable/GCC/ARM_CM4F
-FREERTOS_CFILES := $(addprefix $(FREERTOS_PATH)/,$(addsuffix .c,$(FREERTOS_MODULE)))
-FREERTOS_CFILES += $(FREERTOS_PATH)/portable/GCC/ARM_CM4F/port.c
-
-# Change FreeRTOS memory management code here (http://www.freertos.org/a00111.html)
-FREERTOS_CFILES += $(FREERTOS_PATH)/portable/MemMang/heap_1.c
-
-INC_PATH += $(FREERTOS_PATH)/CMSIS_RTOS
-FREERTOS_CFILES += $(FREERTOS_PATH)/CMSIS_RTOS/cmsis_os.c
-
-# HAL setting
-HAL_PATH := lib//Drivers/HAL
-INC_PATH += $(HAL_PATH)/Inc
-HAL_CFILES := $(HAL_PATH)/Src/stm32f3xx_hal.c
-HAL_CFILES += $(addprefix $(HAL_PATH)/Src/stm32f3xx_hal_,$(addsuffix .c,$(HAL_MODULE)))
-
 # CMSIS setting
 CMSIS_PATH := lib/CMSIS/
 INC_PATH += $(CMSIS_PATH)/Device/ST/STM32F3xx/Include
 INC_PATH += $(CMSIS_PATH)/Include
 
-# Driver setting
-DRIVER_PATH := lib/Drivers
-INC_PATH += $(DRIVER_PATH)/BSP/STM32F3-Discovery
-DRIVER_CFILES := $(DRIVER_PATH)/BSP/STM32F3-Discovery/stm32f3_discovery.c
+# FreeRTOS setting
+FREERTOS_PATH := lib/FreeRTOS/Source
+INC_PATH += $(FREERTOS_PATH)/include
+INC_PATH += $(FREERTOS_PATH)/CMSIS_RTOS
+INC_PATH += $(FREERTOS_PATH)/portable/GCC/$(GCC_ARCH)
+FREERTOS_CFILES := $(addprefix $(FREERTOS_PATH)/,$(addsuffix .c,$(FREERTOS_MODULE)))
+FREERTOS_CFILES += $(FREERTOS_PATH)/portable/GCC/$(GCC_ARCH)/port.c
+FREERTOS_CFILES += $(FREERTOS_PATH)/portable/MemMang/$(FREERTOS_MEMMANG).c
+FREERTOS_CFILES += $(FREERTOS_PATH)/CMSIS_RTOS/cmsis_os.c
+
+# HAL Library setting
+HAL_PATH := lib/Drivers/HAL
+INC_PATH += $(HAL_PATH)/Inc
+HAL_CFILES := $(HAL_PATH)/Src/stm32f3xx_hal.c
+HAL_CFILES += $(addprefix $(HAL_PATH)/Src/stm32f3xx_hal_,$(addsuffix .c,$(HAL_MODULE)))
+
+# BSP Library setting
+BSP_PATH := lib/Drivers/BSP
+INC_PATH += $(BSP_PATH)/Components
+INC_PATH += $(BSP_PATH)/STM32F3-Discovery
+BSP_CFILES := $(BSP_PATH)/STM32F3-Discovery/stm32f3_discovery.c
+BSP_CFILES += $(addprefix $(BSP_PATH)/STM32F3-Discovery/stm32f3_discovery_,$(addsuffix .c,$(BSP_MODULE)))
 
 # Toolchain setting
 CC := $(shell { which $(TOOLCHAIN)-gcc; } 2>/dev/null)
@@ -66,7 +71,7 @@ vpath %.h include $(COMMON_DIR)
 
 default: $(BUILD_DIR)/$(TARGET).bin
 
-SOURCES := $(wildcard src/*.c) $(FREERTOS_CFILES) $(DRIVER_CFILES) $(HAL_CFILES)
+SOURCES := $(wildcard src/*.c) $(FREERTOS_CFILES) $(DRIVER_CFILES) $(HAL_CFILES) $(BSP_CFILES)
 OBJECTS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(SOURCES))
 DEPENDS := $(patsubst %.c,$(BUILD_DIR)/%.d,$(SOURCES))
 
