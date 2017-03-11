@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    cs42l52.c
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    02-December-2014
+  * @version V2.0.0
+  * @date    08-March-2016
   * @brief   This file provides the CS42L52 Audio Codec driver.   
   ******************************************************************************
   * @attention
@@ -88,6 +88,7 @@
 AUDIO_DrvTypeDef cs42l52_drv = 
 {
   cs42l52_Init,
+  cs42l52_DeInit,
   cs42l52_ReadID,
 
   cs42l52_Play,
@@ -207,6 +208,17 @@ uint32_t cs42l52_Init(uint16_t DeviceAddr, uint16_t OutputDevice, uint8_t Volume
   
   /* Return communication control value */
   return counter;  
+}
+
+/**
+  * @brief  Deinitializes the audio codec.
+  * @param  None
+  * @retval  None
+  */
+void cs42l52_DeInit(void)
+{
+  /* Deinitialize Audio Codec interface */
+  AUDIO_IO_DeInit();
 }
 
 /**

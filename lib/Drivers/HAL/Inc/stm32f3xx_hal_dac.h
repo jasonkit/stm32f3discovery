@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    stm32f3xx_hal_dac.h
   * @author  MCD Application Team
-  * @version V1.2.0
-  * @date    13-November-2015
+  * @version V1.4.0
+  * @date    16-December-2016
   * @brief   Header file of DAC HAL module.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -65,10 +65,10 @@
   */ 
 typedef enum
 {
-  HAL_DAC_STATE_RESET             = 0x00,  /*!< DAC not yet initialized or disabled  */
-  HAL_DAC_STATE_READY             = 0x01,  /*!< DAC initialized and ready for use    */
-  HAL_DAC_STATE_BUSY              = 0x02,  /*!< DAC internal processing is ongoing   */
-  HAL_DAC_STATE_TIMEOUT           = 0x03,  /*!< DAC timeout state                    */
+  HAL_DAC_STATE_RESET             = 0x00U,  /*!< DAC not yet initialized or disabled  */
+  HAL_DAC_STATE_READY             = 0x01U,  /*!< DAC initialized and ready for use    */
+  HAL_DAC_STATE_BUSY              = 0x02U,  /*!< DAC internal processing is ongoing   */
+  HAL_DAC_STATE_TIMEOUT           = 0x03U,  /*!< DAC timeout state                    */
   HAL_DAC_STATE_ERROR             = 0x04   /*!< DAC error state                      */
  
 }HAL_DAC_StateTypeDef;
@@ -104,9 +104,9 @@ typedef struct __DAC_HandleTypeDef
 
   HAL_LockTypeDef             Lock;          /*!< DAC locking object                */
   
-  DMA_HandleTypeDef           *DMA_Handle1;  /*!< Pointer DMA handler for channel 1 */
+  DMA_HandleTypeDef           *DMA_Handle1;  /*!< Pointer DMA handler for channel 1U */
   
-  DMA_HandleTypeDef           *DMA_Handle2;  /*!< Pointer DMA handler for channel 2 */ 
+  DMA_HandleTypeDef           *DMA_Handle2;  /*!< Pointer DMA handler for channel 2U */ 
   
   __IO uint32_t               ErrorCode;     /*!< DAC Error code                    */
   
@@ -134,7 +134,7 @@ typedef struct __DAC_HandleTypeDef
 /** @defgroup DAC_lfsrunmask_triangleamplitude DAC lfsrunmask triangleamplitude
   * @{
   */
-#define DAC_LFSRUNMASK_BIT0                ((uint32_t)0x00000000) /*!< Unmask DAC channel LFSR bit0 for noise wave generation */
+#define DAC_LFSRUNMASK_BIT0                (0x00000000U) /*!< Unmask DAC channel LFSR bit0 for noise wave generation */
 #define DAC_LFSRUNMASK_BITS1_0             ((uint32_t)DAC_CR_MAMP1_0) /*!< Unmask DAC channel LFSR bit[1:0] for noise wave generation */
 #define DAC_LFSRUNMASK_BITS2_0             ((uint32_t)DAC_CR_MAMP1_1) /*!< Unmask DAC channel LFSR bit[2:0] for noise wave generation */
 #define DAC_LFSRUNMASK_BITS3_0             ((uint32_t)DAC_CR_MAMP1_1 | DAC_CR_MAMP1_0)/*!< Unmask DAC channel LFSR bit[3:0] for noise wave generation */
@@ -146,18 +146,18 @@ typedef struct __DAC_HandleTypeDef
 #define DAC_LFSRUNMASK_BITS9_0             ((uint32_t)DAC_CR_MAMP1_3 | DAC_CR_MAMP1_0) /*!< Unmask DAC channel LFSR bit[9:0] for noise wave generation */
 #define DAC_LFSRUNMASK_BITS10_0            ((uint32_t)DAC_CR_MAMP1_3 | DAC_CR_MAMP1_1) /*!< Unmask DAC channel LFSR bit[10:0] for noise wave generation */
 #define DAC_LFSRUNMASK_BITS11_0            ((uint32_t)DAC_CR_MAMP1_3 | DAC_CR_MAMP1_1 | DAC_CR_MAMP1_0) /*!< Unmask DAC channel LFSR bit[11:0] for noise wave generation */
-#define DAC_TRIANGLEAMPLITUDE_1            ((uint32_t)0x00000000) /*!< Select max triangle amplitude of 1 */
-#define DAC_TRIANGLEAMPLITUDE_3            ((uint32_t)DAC_CR_MAMP1_0) /*!< Select max triangle amplitude of 3 */
-#define DAC_TRIANGLEAMPLITUDE_7            ((uint32_t)DAC_CR_MAMP1_1) /*!< Select max triangle amplitude of 7 */
-#define DAC_TRIANGLEAMPLITUDE_15           ((uint32_t)DAC_CR_MAMP1_1 | DAC_CR_MAMP1_0) /*!< Select max triangle amplitude of 15 */
-#define DAC_TRIANGLEAMPLITUDE_31           ((uint32_t)DAC_CR_MAMP1_2) /*!< Select max triangle amplitude of 31 */
-#define DAC_TRIANGLEAMPLITUDE_63           ((uint32_t)DAC_CR_MAMP1_2 | DAC_CR_MAMP1_0) /*!< Select max triangle amplitude of 63 */
-#define DAC_TRIANGLEAMPLITUDE_127          ((uint32_t)DAC_CR_MAMP1_2 | DAC_CR_MAMP1_1) /*!< Select max triangle amplitude of 127 */
-#define DAC_TRIANGLEAMPLITUDE_255          ((uint32_t)DAC_CR_MAMP1_2 | DAC_CR_MAMP1_1 | DAC_CR_MAMP1_0) /*!< Select max triangle amplitude of 255 */
-#define DAC_TRIANGLEAMPLITUDE_511          ((uint32_t)DAC_CR_MAMP1_3) /*!< Select max triangle amplitude of 511 */
-#define DAC_TRIANGLEAMPLITUDE_1023         ((uint32_t)DAC_CR_MAMP1_3 | DAC_CR_MAMP1_0) /*!< Select max triangle amplitude of 1023 */
-#define DAC_TRIANGLEAMPLITUDE_2047         ((uint32_t)DAC_CR_MAMP1_3 | DAC_CR_MAMP1_1) /*!< Select max triangle amplitude of 2047 */
-#define DAC_TRIANGLEAMPLITUDE_4095         ((uint32_t)DAC_CR_MAMP1_3 | DAC_CR_MAMP1_1 | DAC_CR_MAMP1_0) /*!< Select max triangle amplitude of 4095 */
+#define DAC_TRIANGLEAMPLITUDE_1            (0x00000000U) /*!< Select max triangle amplitude of 1U */
+#define DAC_TRIANGLEAMPLITUDE_3            ((uint32_t)DAC_CR_MAMP1_0) /*!< Select max triangle amplitude of 3U */
+#define DAC_TRIANGLEAMPLITUDE_7            ((uint32_t)DAC_CR_MAMP1_1) /*!< Select max triangle amplitude of 7U */
+#define DAC_TRIANGLEAMPLITUDE_15           ((uint32_t)DAC_CR_MAMP1_1 | DAC_CR_MAMP1_0) /*!< Select max triangle amplitude of 15U */
+#define DAC_TRIANGLEAMPLITUDE_31           ((uint32_t)DAC_CR_MAMP1_2) /*!< Select max triangle amplitude of 31U */
+#define DAC_TRIANGLEAMPLITUDE_63           ((uint32_t)DAC_CR_MAMP1_2 | DAC_CR_MAMP1_0) /*!< Select max triangle amplitude of 63U */
+#define DAC_TRIANGLEAMPLITUDE_127          ((uint32_t)DAC_CR_MAMP1_2 | DAC_CR_MAMP1_1) /*!< Select max triangle amplitude of 127U */
+#define DAC_TRIANGLEAMPLITUDE_255          ((uint32_t)DAC_CR_MAMP1_2 | DAC_CR_MAMP1_1 | DAC_CR_MAMP1_0) /*!< Select max triangle amplitude of 255U */
+#define DAC_TRIANGLEAMPLITUDE_511          ((uint32_t)DAC_CR_MAMP1_3) /*!< Select max triangle amplitude of 511U */
+#define DAC_TRIANGLEAMPLITUDE_1023         ((uint32_t)DAC_CR_MAMP1_3 | DAC_CR_MAMP1_0) /*!< Select max triangle amplitude of 1023U */
+#define DAC_TRIANGLEAMPLITUDE_2047         ((uint32_t)DAC_CR_MAMP1_3 | DAC_CR_MAMP1_1) /*!< Select max triangle amplitude of 2047U */
+#define DAC_TRIANGLEAMPLITUDE_4095         ((uint32_t)DAC_CR_MAMP1_3 | DAC_CR_MAMP1_1 | DAC_CR_MAMP1_0) /*!< Select max triangle amplitude of 4095U */
 
 /**
   * @}
@@ -166,29 +166,31 @@ typedef struct __DAC_HandleTypeDef
 /** @defgroup DAC_output_buffer DAC output buffer
   * @{
   */
-#define DAC_OUTPUTBUFFER_ENABLE            ((uint32_t)0x00000000)
+#define DAC_OUTPUTBUFFER_ENABLE            (0x00000000U)
 #define DAC_OUTPUTBUFFER_DISABLE           ((uint32_t)DAC_CR_BOFF1)
 
 /**
   * @}
   */
 
+#if defined(STM32F303x8) || defined(STM32F334x8) || defined(STM32F328xx)
 /** @defgroup DAC_output_switch DAC output switch
   * @{
   */
-#define DAC_OUTPUTSWITCH_DISABLE           ((uint32_t)0x00000000)
+#define DAC_OUTPUTSWITCH_DISABLE           (0x00000000U)
 #define DAC_OUTPUTSWITCH_ENABLE            ((uint32_t)DAC_CR_OUTEN1)
 
 /**
   * @}
   */
 
+#endif /* STM32F303x8 || STM32F334x8 || STM32F328xx || */
 /** @defgroup DAC_data_alignement DAC data alignement
   * @{
   */
-#define DAC_ALIGN_12B_R                    ((uint32_t)0x00000000)
-#define DAC_ALIGN_12B_L                    ((uint32_t)0x00000004)
-#define DAC_ALIGN_8B_R                     ((uint32_t)0x00000008)
+#define DAC_ALIGN_12B_R                    (0x00000000U)
+#define DAC_ALIGN_12B_L                    (0x00000004U)
+#define DAC_ALIGN_8B_R                     (0x00000008U)
 
 /**
   * @}
@@ -249,19 +251,19 @@ typedef struct __DAC_HandleTypeDef
   * @param  __ALIGNMENT__: specifies the DAC alignment
   * @retval None
   */
-#define DAC_DHR12R1_ALIGNMENT(__ALIGNMENT__) (((uint32_t)0x00000008) + (__ALIGNMENT__))
+#define DAC_DHR12R1_ALIGNMENT(__ALIGNMENT__) ((0x00000008U) + (__ALIGNMENT__))
 
 /** @brief  Set DHR12R2 alignment
   * @param  __ALIGNMENT__: specifies the DAC alignment
   * @retval None
   */
-#define DAC_DHR12R2_ALIGNMENT(__ALIGNMENT__) (((uint32_t)0x00000014) + (__ALIGNMENT__))
+#define DAC_DHR12R2_ALIGNMENT(__ALIGNMENT__) ((0x00000014U) + (__ALIGNMENT__))
 
 /** @brief  Set DHR12RD alignment
   * @param  __ALIGNMENT__: specifies the DAC alignment
   * @retval None
   */
-#define DAC_DHR12RD_ALIGNMENT(__ALIGNMENT__) (((uint32_t)0x00000020) + (__ALIGNMENT__))
+#define DAC_DHR12RD_ALIGNMENT(__ALIGNMENT__) ((0x00000020U) + (__ALIGNMENT__))
 
 /** @brief Enable the DAC interrupt
   * @param  __HANDLE__: specifies the DAC handle
@@ -351,14 +353,16 @@ typedef struct __DAC_HandleTypeDef
 #define IS_DAC_OUTPUT_BUFFER_STATE(STATE) (((STATE) == DAC_OUTPUTBUFFER_ENABLE) || \
                                            ((STATE) == DAC_OUTPUTBUFFER_DISABLE))
 
+#if defined(STM32F303x8) || defined(STM32F334x8) || defined(STM32F328xx)
 #define IS_DAC_OUTPUT_SWITCH_STATE(STATE) (((STATE) == DAC_OUTPUTSWITCH_DISABLE) || \
                                            ((STATE) == DAC_OUTPUTSWITCH_ENABLE))
 
+#endif /* STM32F303x8 || STM32F334x8 || STM32F328xx || */
 #define IS_DAC_ALIGN(ALIGN) (((ALIGN) == DAC_ALIGN_12B_R) || \
                              ((ALIGN) == DAC_ALIGN_12B_L) || \
                              ((ALIGN) == DAC_ALIGN_8B_R))
 
-#define IS_DAC_DATA(DATA) ((DATA) <= 0xFFF0) 
+#define IS_DAC_DATA(DATA) ((DATA) <= 0xFFF0U) 
 
 
 
@@ -414,7 +418,7 @@ void HAL_DAC_DMAUnderrunCallbackCh1(DAC_HandleTypeDef *hdac);
   * @{
   */
 /* Peripheral Control functions ***********************************************/
-HAL_StatusTypeDef HAL_DAC_SetValue(DAC_HandleTypeDef* hdac, uint32_t channel, uint32_t alignment, uint32_t data);
+HAL_StatusTypeDef HAL_DAC_SetValue(DAC_HandleTypeDef* hdac, uint32_t Channel, uint32_t Alignment, uint32_t Data);
 
 /**
   * @}

@@ -2,14 +2,14 @@
   ******************************************************************************
   * @file    stm32f3xx_hal_def.h
   * @author  MCD Application Team
-  * @version V1.2.0
-  * @date    13-November-2015
+  * @version V1.4.0
+  * @date    16-December-2016
   * @brief   This file contains HAL common defines, enumeration, macros and 
   *          structures definitions. 
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -56,9 +56,9 @@
   */  
 typedef enum 
 {
-  HAL_OK       = 0x00,
-  HAL_ERROR    = 0x01,
-  HAL_BUSY     = 0x02,
+  HAL_OK       = 0x00U,
+  HAL_ERROR    = 0x01U,
+  HAL_BUSY     = 0x02U,
   HAL_TIMEOUT  = 0x03
 } HAL_StatusTypeDef;
 
@@ -67,12 +67,12 @@ typedef enum
   */
 typedef enum 
 {
-  HAL_UNLOCKED = 0x00,
+  HAL_UNLOCKED = 0x00U,
   HAL_LOCKED   = 0x01  
 } HAL_LockTypeDef;
 
 /* Exported macro ------------------------------------------------------------*/
-#define HAL_MAX_DELAY      0xFFFFFFFF
+#define HAL_MAX_DELAY      0xFFFFFFFFU
 
 #define HAL_IS_BIT_SET(REG, BIT)         (((REG) & (BIT)) != RESET)
 #define HAL_IS_BIT_CLR(REG, BIT)         (((REG) & (BIT)) == RESET)
@@ -81,7 +81,7 @@ typedef enum
                         do{                                                        \
                               (__HANDLE__)->__PPP_DMA_FIELD_ = &(__DMA_HANDLE_);   \
                               (__DMA_HANDLE_).Parent = (__HANDLE__);               \
-                          } while(0)
+                          } while(0U)
 
 #define UNUSED(x) ((void)(x))
                          
@@ -100,9 +100,9 @@ typedef enum
   *            HAL_PPP_MspInit() which will reconfigure the low level hardware.
   * @retval None
   */
-#define __HAL_RESET_HANDLE_STATE(__HANDLE__) ((__HANDLE__)->State = 0)
+#define __HAL_RESET_HANDLE_STATE(__HANDLE__) ((__HANDLE__)->State = 0U)
 
-#if (USE_RTOS == 1)
+#if (USE_RTOS == 1U)
   #error " USE_RTOS should be 0 in the current HAL release "
 #else
   #define __HAL_LOCK(__HANDLE__)                                           \
@@ -115,12 +115,12 @@ typedef enum
                                     {                                      \
                                        (__HANDLE__)->Lock = HAL_LOCKED;    \
                                     }                                      \
-       	                          }while (0)
+       	                          }while (0U)
 
   #define __HAL_UNLOCK(__HANDLE__)                                          \
                                   do{                                       \
                                       (__HANDLE__)->Lock = HAL_UNLOCKED;    \
-                                    }while (0)
+                                    }while (0U)
 #endif /* USE_RTOS */
 
 #if  defined ( __GNUC__ )

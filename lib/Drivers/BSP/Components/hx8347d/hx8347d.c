@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    hx8347d.c
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    02-December-2014
+  * @version V1.1.1
+  * @date    24-November-2014
   * @brief   This file includes the LCD driver for HX8347D LCD.
   ******************************************************************************
   * @attention
@@ -325,7 +325,7 @@ void hx8347d_WritePixel(uint16_t Xpos, uint16_t Ypos, uint16_t RGBCode)
   LCD_IO_WriteReg(LCD_REG_34);
 
   /* Write 16-bit GRAM Reg */
-  LCD_IO_WriteData((uint8_t*)&RGBCode, 2);
+  LCD_IO_WriteMultipleData((uint8_t*)&RGBCode, 2);
 }
 
 /**
@@ -356,7 +356,7 @@ void hx8347d_WriteReg(uint8_t LCDReg, uint16_t LCDRegValue)
   LCD_IO_WriteReg(LCDReg);
   
   /* Write 16-bit GRAM Reg */
-  LCD_IO_WriteData((uint8_t*)&LCDRegValue, 2);
+  LCD_IO_WriteMultipleData((uint8_t*)&LCDRegValue, 2);
 }
 
 /**
@@ -422,7 +422,7 @@ void hx8347d_DrawHLine(uint16_t RGBCode, uint16_t Xpos, uint16_t Ypos, uint16_t 
     ArrayRGB[i] = RGBCode;
   }  
 
-  LCD_IO_WriteData((uint8_t*)&ArrayRGB[0], Length * 2);
+  LCD_IO_WriteMultipleData((uint8_t*)&ArrayRGB[0], Length * 2);
 }
 
 /**
@@ -449,7 +449,7 @@ void hx8347d_DrawVLine(uint16_t RGBCode, uint16_t Xpos, uint16_t Ypos, uint16_t 
   }
   
   /* Write 16-bit GRAM Reg */
-  LCD_IO_WriteData((uint8_t*)&ArrayRGB[0], Length * 2);
+  LCD_IO_WriteMultipleData((uint8_t*)&ArrayRGB[0], Length * 2);
 }
 
 /**
@@ -480,7 +480,7 @@ void hx8347d_DrawBitmap(uint16_t Xpos, uint16_t Ypos, uint8_t *pbmp)
   /* Prepare to write GRAM */
   LCD_IO_WriteReg(LCD_REG_34);
   
-  LCD_IO_WriteData((uint8_t*)pbmp, size*2);
+  LCD_IO_WriteMultipleData((uint8_t*)pbmp, size*2);
   
   /* Set GRAM write direction and BGR = 0 */
   /* Memory access control: MY = 1, MX = 1, MV = 1, ML = 0 */

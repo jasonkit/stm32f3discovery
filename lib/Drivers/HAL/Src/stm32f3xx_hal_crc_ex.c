@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    stm32f3xx_hal_crc_ex.c
   * @author  MCD Application Team
-  * @version V1.2.0
-  * @date    13-November-2015
+  * @version V1.4.0
+  * @date    16-December-2016
   * @brief   Extended CRC HAL module driver.
   *          This file provides firmware functions to manage the extended 
   *          functionalities of the CRC peripheral.  
@@ -20,7 +20,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -106,7 +106,7 @@
   */                                   
 HAL_StatusTypeDef HAL_CRCEx_Polynomial_Set(CRC_HandleTypeDef *hcrc, uint32_t Pol, uint32_t PolyLength)
 {
-  uint32_t msb = 31; /* polynomial degree is 32 at most, so msb is initialized to max value */
+  uint32_t msb = 31U; /* polynomial degree is 32 at most, so msb is initialized to max value */
 
   /* Check the parameters */
   assert_param(IS_CRC_POL_LENGTH(PolyLength));
@@ -118,7 +118,7 @@ HAL_StatusTypeDef HAL_CRCEx_Polynomial_Set(CRC_HandleTypeDef *hcrc, uint32_t Pol
    * Look for MSB position: msb will contain the degree of
    *  the second to the largest polynomial member. E.g., for
    *  X^7 + X^6 + X^5 + X^2 + 1, msb = 6. */
-  while (((Pol & (1U << msb)) == 0) && (msb-- > 0)){}
+  while (((Pol & (1U << msb)) == 0U) && (msb-- > 0U)){}
 
   switch (PolyLength)
   {

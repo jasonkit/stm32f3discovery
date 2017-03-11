@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    idd.h
   * @author  MCD Application Team
-  * @version V2.1.0
-  * @date    06-February-2015
+  * @version V4.0.1
+  * @date    21-July-2015
   * @brief   This file contains all the functions prototypes for the IDD driver.
   ******************************************************************************
   * @attention
@@ -62,7 +62,7 @@
   * @{
   */
 
-/** @defgroup IDD_Config  IDD Config
+/** @defgroup IDD_Config_structure  IDD Configuration structure
   * @{
   */
 typedef struct
@@ -81,16 +81,34 @@ typedef struct
                                  */
   uint16_t Shunt4Value;     /*!< Specifies value of Shunt 4 if existing
                                   */
-  uint8_t ShuntNumber;      /*!< Specifies number of shunts used 
+  uint16_t Shunt0StabDelay; /*!< Specifies delay of Shunt 0 stabilization if existing
+                                  */
+  uint16_t Shunt1StabDelay; /*!< Specifies delay of Shunt 1 stabilization if existing
+                                  */
+  uint16_t Shunt2StabDelay; /*!< Specifies delay of Shunt 2 stabilization if existing
+                                  */
+  uint16_t Shunt3StabDelay; /*!< Specifies delay of Shunt 3 stabilization if existing
+                                  */
+  uint16_t Shunt4StabDelay; /*!< Specifies delay of Shunt 4 stabilization if existing
+                                  */
+  uint8_t ShuntNbOnBoard;   /*!< Specifies number of shunts that are present on board
                                  This parameter can be a value of @ref IDD_shunt_number */
-  uint8_t VrefMeasurement;  /*!< Specifies if Vref is automaticcally measured before each Idd measurement
+  uint8_t ShuntNbUsed;      /*!< Specifies number of shunts used for measurement
+                                 This parameter can be a value of @ref IDD_shunt_number */
+  uint8_t VrefMeasurement;  /*!< Specifies if Vref is automatically measured before each Idd measurement
                                  This parameter can be a value of @ref IDD_Vref_Measurement */
   uint8_t Calibration;      /*!< Specifies if calibration is done before each Idd measurement
                                   */
-  uint8_t PreDelay;         /*!< Specifies if Pre delay unit 
+  uint8_t PreDelayUnit;     /*!< Specifies Pre delay unit 
                                  This parameter can be a value of @ref IDD_PreDelay */
-  uint8_t PreDelayValue;    /*!< Specifies if Pre delay value in selected unit
+  uint8_t PreDelayValue;    /*!< Specifies Pre delay value in selected unit
                                   */
+  uint8_t MeasureNb;        /*!< Specifies number of Measure to be performed 
+                                 This parameter can be a value between 1 and 256 */
+  uint8_t DeltaDelayUnit;   /*!< Specifies Delta delay unit
+                                  This parameter can be a value of @ref IDD_DeltaDelay */
+  uint8_t DeltaDelayValue;  /*!< Specifies Delta delay between 2 measures
+                                  value can be between 1 and 128 */
 }IDD_ConfigTypeDef;
 /**
   * @}
@@ -102,9 +120,11 @@ typedef struct
 typedef struct
 {
   void       (*Init)(uint16_t);
+  void       (*DeInit)(uint16_t);
   uint16_t   (*ReadID)(uint16_t);
   void       (*Reset)(uint16_t);
   void       (*LowPower)(uint16_t);
+  void       (*WakeUp)(uint16_t);
   void       (*Start)(uint16_t);
   void       (*Config)(uint16_t,IDD_ConfigTypeDef);
   void       (*GetValue)(uint16_t, uint32_t *);

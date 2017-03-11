@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    cs42l52.h
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    02-December-2014
+  * @version V2.0.0
+  * @date    08-March-2016
   * @brief   This file contains all the functions prototypes for the cs42l52.c driver.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -134,6 +134,7 @@
 ------------------------------------------------------------------------------*/
 /* High Layer codec functions */
 uint32_t cs42l52_Init(uint16_t DeviceAddr, uint16_t OutputDevice, uint8_t Volume, uint32_t AudioFreq);
+void     cs42l52_DeInit(void);
 uint32_t cs42l52_ReadID(uint16_t DeviceAddr);
 uint32_t cs42l52_Play(uint16_t DeviceAddr, uint16_t* pBuffer, uint16_t Size);
 uint32_t cs42l52_Pause(uint16_t DeviceAddr);
@@ -145,7 +146,8 @@ uint32_t cs42l52_SetMute(uint16_t DeviceAddr, uint32_t Cmd);
 uint32_t cs42l52_SetOutputMode(uint16_t DeviceAddr, uint8_t Output);
 
 /* AUDIO IO functions */
-void    AUDIO_IO_Init(void);
+void     AUDIO_IO_Init(void);
+void     AUDIO_IO_DeInit(void);
 void     AUDIO_IO_Write(uint16_t DevAddress, uint8_t Reg, uint8_t Value);
 uint8_t  AUDIO_IO_Read(uint16_t DevAddress, uint8_t Reg);
 void     AUDIO_IO_Delay(uint32_t delay);

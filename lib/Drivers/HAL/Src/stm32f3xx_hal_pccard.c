@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    stm32f3xx_hal_pccard.c
   * @author  MCD Application Team
-  * @version V1.2.0
-  * @date    13-November-2015
+  * @version V1.4.0
+  * @date    16-December-2016
   * @brief   PCCARD HAL module driver.
   *          This file provides a generic firmware to drive PCCARD memories mounted 
   *          as external device.
@@ -47,7 +47,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -77,12 +77,12 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f3xx_hal.h"
 
+#if defined(STM32F302xE) || defined(STM32F303xE) || defined(STM32F398xx)
 /** @addtogroup STM32F3xx_HAL_Driver
   * @{
   */
 
 #ifdef HAL_PCCARD_MODULE_ENABLED
-#if defined(STM32F302xE) || defined(STM32F303xE) || defined(STM32F398xx)
 
 /** @defgroup PCCARD PCCARD
   * @brief PCCARD HAL module driver
@@ -95,9 +95,9 @@
   * @{
   */
 
-#define PCCARD_TIMEOUT_READ_ID      (uint32_t)0x0000FFFF
-#define PCCARD_TIMEOUT_SECTOR       (uint32_t)0x0000FFFF
-#define PCCARD_TIMEOUT_STATUS       (uint32_t)0x01000000
+#define PCCARD_TIMEOUT_READ_ID      0x0000FFFF
+#define PCCARD_TIMEOUT_SECTOR       0x0000FFFF
+#define PCCARD_TIMEOUT_STATUS       0x01000000
 
 #define PCCARD_STATUS_OK            (uint8_t)0x58
 #define PCCARD_STATUS_WRITE_OK      (uint8_t)0x50
@@ -211,6 +211,9 @@ HAL_StatusTypeDef  HAL_PCCARD_DeInit(PCCARD_HandleTypeDef *hpccard)
   */
 __weak void HAL_PCCARD_MspInit(PCCARD_HandleTypeDef *hpccard)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hpccard);
+
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_PCCARD_MspInit could be implemented in the user file
    */ 
@@ -224,6 +227,9 @@ __weak void HAL_PCCARD_MspInit(PCCARD_HandleTypeDef *hpccard)
   */
 __weak void HAL_PCCARD_MspDeInit(PCCARD_HandleTypeDef *hpccard)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hpccard);
+
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_PCCARD_MspDeInit could be implemented in the user file
    */ 
@@ -258,8 +264,8 @@ __weak void HAL_PCCARD_MspDeInit(PCCARD_HandleTypeDef *hpccard)
   */ 
 HAL_StatusTypeDef HAL_PCCARD_Read_ID(PCCARD_HandleTypeDef *hpccard, uint8_t CompactFlash_ID[], uint8_t *pStatus)
 {
-  uint32_t timeout = PCCARD_TIMEOUT_READ_ID, index = 0;
-  uint8_t status = 0;
+  uint32_t timeout = PCCARD_TIMEOUT_READ_ID, index = 0U;
+  uint8_t status = 0U;
   
   /* Process Locked */
   __HAL_LOCK(hpccard);  
@@ -288,14 +294,14 @@ HAL_StatusTypeDef HAL_PCCARD_Read_ID(PCCARD_HandleTypeDef *hpccard, uint8_t Comp
      timeout--;
   }while((status != PCCARD_STATUS_OK) && timeout); 
   
-  if(timeout == 0)
+  if(timeout == 0U)
   {
     *pStatus = PCCARD_TIMEOUT_ERROR;
   }
   else
   {
      /* Read CF ID bytes */
-    for(index = 0; index < 16; index++)
+    for(index = 0U; index < 16U; index++)
     {
       CompactFlash_ID[index] = *(__IO uint8_t *)(PCCARD_IO_SPACE_PRIMARY_ADDR | ATA_DATA);
     }    
@@ -321,8 +327,8 @@ HAL_StatusTypeDef HAL_PCCARD_Read_ID(PCCARD_HandleTypeDef *hpccard, uint8_t Comp
   */    
 HAL_StatusTypeDef HAL_PCCARD_Read_Sector(PCCARD_HandleTypeDef *hpccard, uint16_t *pBuffer, uint16_t SectorAddress, uint8_t *pStatus)
 {
-  uint32_t timeout = PCCARD_TIMEOUT_SECTOR, index = 0;
-  uint8_t status = 0;
+  uint32_t timeout = PCCARD_TIMEOUT_SECTOR, index = 0U;
+  uint8_t status = 0U;
 
   /* Process Locked */
   __HAL_LOCK(hpccard);
@@ -346,17 +352,17 @@ HAL_StatusTypeDef HAL_PCCARD_Read_Sector(PCCARD_HandleTypeDef *hpccard, uint16_t
 
   do
   {
-    /* wait till the Status = 0x80 */
+    /* wait till the Status = 0x80U */
     status =  *(__IO uint16_t *)(PCCARD_IO_SPACE_PRIMARY_ADDR | ATA_STATUS_CMD_ALTERNATE);
     timeout--;
-  }while((status == 0x80) && timeout);
+  }while((status == 0x80U) && timeout);
   
-  if(timeout == 0)
+  if(timeout == 0U)
   {
     *pStatus = PCCARD_TIMEOUT_ERROR;
   }
   
-  timeout = 0xFFFF;
+  timeout = 0xFFFFU;
 
   do
   {
@@ -365,7 +371,7 @@ HAL_StatusTypeDef HAL_PCCARD_Read_Sector(PCCARD_HandleTypeDef *hpccard, uint16_t
     timeout--;
   }while((status != PCCARD_STATUS_OK) && timeout);
   
-  if(timeout == 0)
+  if(timeout == 0U)
   {
     *pStatus = PCCARD_TIMEOUT_ERROR;
   }
@@ -397,8 +403,8 @@ HAL_StatusTypeDef HAL_PCCARD_Read_Sector(PCCARD_HandleTypeDef *hpccard, uint16_t
   */
 HAL_StatusTypeDef HAL_PCCARD_Write_Sector(PCCARD_HandleTypeDef *hpccard, uint16_t *pBuffer, uint16_t SectorAddress,  uint8_t *pStatus)
 {
-  uint32_t timeout = PCCARD_TIMEOUT_SECTOR, index = 0;
-  uint8_t status = 0;
+  uint32_t timeout = PCCARD_TIMEOUT_SECTOR, index = 0U;
+  uint8_t status = 0U;
 
   /* Process Locked */
   __HAL_LOCK(hpccard);  
@@ -427,7 +433,7 @@ HAL_StatusTypeDef HAL_PCCARD_Write_Sector(PCCARD_HandleTypeDef *hpccard, uint16_
     timeout--;
   }while((status != PCCARD_STATUS_OK) && timeout);
   
-  if(timeout == 0)
+  if(timeout == 0U)
   {
     *pStatus = PCCARD_TIMEOUT_ERROR;
   }
@@ -445,7 +451,7 @@ HAL_StatusTypeDef HAL_PCCARD_Write_Sector(PCCARD_HandleTypeDef *hpccard, uint16_
     timeout--;
   }while((status != PCCARD_STATUS_WRITE_OK) && timeout);
 
-  if(timeout == 0)
+  if(timeout == 0U)
   {
     *pStatus = PCCARD_TIMEOUT_ERROR;
   }  
@@ -470,8 +476,8 @@ HAL_StatusTypeDef HAL_PCCARD_Write_Sector(PCCARD_HandleTypeDef *hpccard, uint16_
   */
 HAL_StatusTypeDef  HAL_PCCARD_Erase_Sector(PCCARD_HandleTypeDef *hpccard, uint16_t SectorAddress, uint8_t *pStatus)
 {
-  uint32_t timeout = 0x400;
-  uint8_t status = 0;
+  uint32_t timeout = 0x400U;
+  uint8_t status = 0U;
   
   /* Process Locked */
   __HAL_LOCK(hpccard);  
@@ -505,7 +511,7 @@ HAL_StatusTypeDef  HAL_PCCARD_Erase_Sector(PCCARD_HandleTypeDef *hpccard, uint16
     timeout--;
   } 
   
-  if(timeout == 0)
+  if(timeout == 0U)
   {
     *pStatus = PCCARD_TIMEOUT_ERROR;
   }
@@ -537,10 +543,10 @@ HAL_StatusTypeDef HAL_PCCARD_Reset(PCCARD_HandleTypeDef *hpccard)
   }
 
   /* Provide an SW reset and Read and verify the:
-   - CF Configuration Option Register at address 0x98000200 --> 0x80
-   - Card Configuration and Status Register	at address 0x98000202 --> 0x00
-   - Pin Replacement Register  at address 0x98000204 --> 0x0C
-   - Socket and Copy Register at address 0x98000206 --> 0x00
+   - CF Configuration Option Register at address 0x98000200U --> 0x80
+   - Card Configuration and Status Register	at address 0x98000202U --> 0x00
+   - Pin Replacement Register  at address 0x98000204U --> 0x0C
+   - Socket and Copy Register at address 0x98000206U --> 0x00
   */
 
   /* Check the PCCARD controller state */
@@ -615,6 +621,9 @@ void HAL_PCCARD_IRQHandler(PCCARD_HandleTypeDef *hpccard)
   */
 __weak void HAL_PCCARD_ITCallback(PCCARD_HandleTypeDef *hpccard)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hpccard);
+
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_PCCARD_ITCallback could be implemented in the user file
    */
@@ -662,7 +671,7 @@ HAL_PCCARD_StateTypeDef HAL_PCCARD_GetState(PCCARD_HandleTypeDef *hpccard)
   */
 HAL_PCCARD_StatusTypeDef HAL_PCCARD_GetStatus(PCCARD_HandleTypeDef *hpccard)
 {
-  uint32_t timeout = PCCARD_TIMEOUT_STATUS, status_cf = 0;  
+  uint32_t timeout = PCCARD_TIMEOUT_STATUS, status_cf = 0U;  
   
   /* Check the PCCARD controller state */
   if(hpccard->State == HAL_PCCARD_STATE_BUSY)
@@ -678,7 +687,7 @@ HAL_PCCARD_StatusTypeDef HAL_PCCARD_GetStatus(PCCARD_HandleTypeDef *hpccard)
     timeout--;
   }
 
-  if(timeout == 0)
+  if(timeout == 0U)
   {          
     status_cf =  PCCARD_TIMEOUT_ERROR;      
   }   
@@ -698,7 +707,7 @@ HAL_PCCARD_StatusTypeDef HAL_PCCARD_GetStatus(PCCARD_HandleTypeDef *hpccard)
   */
 HAL_PCCARD_StatusTypeDef HAL_PCCARD_ReadStatus(PCCARD_HandleTypeDef *hpccard)
 {
-  uint8_t data = 0, status_cf = PCCARD_BUSY;
+  uint8_t data = 0U, status_cf = PCCARD_BUSY;
   
   /* Check the PCCARD controller state */
   if(hpccard->State == HAL_PCCARD_STATE_BUSY)
@@ -732,11 +741,11 @@ HAL_PCCARD_StatusTypeDef HAL_PCCARD_ReadStatus(PCCARD_HandleTypeDef *hpccard)
   * @}
   */
 
-#endif /* STM32F302xE || STM32F303xE || STM32F398xx */
 #endif /* HAL_PCCARD_MODULE_ENABLED */  
 
 /**
   * @}
   */
+#endif /* STM32F302xE || STM32F303xE || STM32F398xx */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

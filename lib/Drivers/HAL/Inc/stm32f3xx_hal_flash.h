@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    stm32f3xx_hal_flash.h
   * @author  MCD Application Team
-  * @version V1.2.0
-  * @date    13-November-2015
+  * @version V1.4.0
+  * @date    16-December-2016
   * @brief   Header file of Flash HAL module.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -57,7 +57,7 @@
 /** @addtogroup FLASH_Private_Constants
   * @{
   */
-#define FLASH_TIMEOUT_VALUE   ((uint32_t)50000)/* 50 s */
+#define FLASH_TIMEOUT_VALUE      (50000U) /* 50 s */
 /**
   * @}
   */
@@ -83,18 +83,17 @@
   * @{
   */  
 
-
 /**
   * @brief  FLASH Procedure structure definition
   */
 typedef enum 
 {
-  FLASH_PROC_NONE              = 0, 
-  FLASH_PROC_PAGEERASE         = 1,
-  FLASH_PROC_MASSERASE         = 2,
-  FLASH_PROC_PROGRAMHALFWORD   = 3,
-  FLASH_PROC_PROGRAMWORD       = 4,
-  FLASH_PROC_PROGRAMDOUBLEWORD = 5
+  FLASH_PROC_NONE              = 0U, 
+  FLASH_PROC_PAGEERASE         = 1U,
+  FLASH_PROC_MASSERASE         = 2U,
+  FLASH_PROC_PROGRAMHALFWORD   = 3U,
+  FLASH_PROC_PROGRAMWORD       = 4U,
+  FLASH_PROC_PROGRAMDOUBLEWORD = 5U
 } FLASH_ProcedureTypeDef;
 
 /** 
@@ -129,9 +128,9 @@ typedef struct
   * @{
   */
 
-#define HAL_FLASH_ERROR_NONE      ((uint32_t)0x00)  /*!< No error */
-#define HAL_FLASH_ERROR_PROG      ((uint32_t)0x01)  /*!< Programming error */
-#define HAL_FLASH_ERROR_WRP       ((uint32_t)0x02)  /*!< Write protection error */
+#define HAL_FLASH_ERROR_NONE      0x00U  /*!< No error */
+#define HAL_FLASH_ERROR_PROG      0x01U  /*!< Programming error */
+#define HAL_FLASH_ERROR_WRP       0x02U  /*!< Write protection error */
 
 /**
   * @}
@@ -140,9 +139,9 @@ typedef struct
 /** @defgroup FLASH_Type_Program FLASH Type Program
   * @{
   */ 
-#define FLASH_TYPEPROGRAM_HALFWORD   ((uint32_t)0x01)  /*!<Program a half-word (16-bit) at a specified address.*/
-#define FLASH_TYPEPROGRAM_WORD       ((uint32_t)0x02)  /*!<Program a word (32-bit) at a specified address.*/
-#define FLASH_TYPEPROGRAM_DOUBLEWORD ((uint32_t)0x03)  /*!<Program a double word (64-bit) at a specified address*/
+#define FLASH_TYPEPROGRAM_HALFWORD   (0x01U)  /*!<Program a half-word (16-bit) at a specified address.*/
+#define FLASH_TYPEPROGRAM_WORD       (0x02U)  /*!<Program a word (32-bit) at a specified address.*/
+#define FLASH_TYPEPROGRAM_DOUBLEWORD (0x03U)  /*!<Program a double word (64-bit) at a specified address*/
 
 /**
   * @}
@@ -151,7 +150,7 @@ typedef struct
 /** @defgroup FLASH_Latency FLASH Latency
   * @{
   */
-#define FLASH_LATENCY_0            ((uint32_t)0x00000000)    /*!< FLASH Zero Latency cycle */
+#define FLASH_LATENCY_0            (0x00000000U)    /*!< FLASH Zero Latency cycle */
 #define FLASH_LATENCY_1            FLASH_ACR_LATENCY_0       /*!< FLASH One Latency cycle */
 #define FLASH_LATENCY_2            FLASH_ACR_LATENCY_1       /*!< FLASH Two Latency cycles */
 
@@ -376,7 +375,6 @@ uint32_t HAL_FLASH_GetError(void);
 /** @addtogroup FLASH_Private_Functions
  * @{
  */
-void                    FLASH_PageErase(uint32_t PageAddress);
 HAL_StatusTypeDef       FLASH_WaitForLastOperation(uint32_t Timeout);
 
 /**

@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    hx8347d.h
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    02-December-2014
+  * @version V1.1.1
+  * @date    24-November-2014
   * @brief   This file contains all the functions prototypes for the hx8347d.c
   *          driver.
   ******************************************************************************
@@ -249,7 +249,7 @@ extern LCD_DrvTypeDef   hx8347d_drv;
 
 /* LCD IO functions */
 void     LCD_IO_Init(void);
-void     LCD_IO_WriteData(uint8_t *pData, uint32_t Size);
+void     LCD_IO_WriteMultipleData(uint8_t *pData, uint32_t Size);
 void     LCD_IO_WriteReg(uint8_t Reg);
 uint16_t LCD_IO_ReadData(uint16_t Reg);
 void     LCD_Delay (uint32_t delay);

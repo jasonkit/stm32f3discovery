@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    ts.h
   * @author  MCD Application Team
-  * @version V2.1.0
-  * @date    06-February-2015
+  * @version V4.0.1
+  * @date    21-July-2015
   * @brief   This file contains all the functions prototypes for the Touch Screen driver.
   ******************************************************************************
   * @attention
@@ -61,8 +61,9 @@
 /** @defgroup TS_Exported_Types
   * @{
   */
-/** 
-  * @brief  TS driver structure definition
+
+/** @defgroup TS_Driver_structure  Touch Sensor Driver structure
+  * @{
   */
 typedef struct
 {  
@@ -77,6 +78,9 @@ typedef struct
   uint8_t    (*GetITStatus)(uint16_t);
   void       (*DisableIT)(uint16_t);
 }TS_DrvTypeDef;
+/**
+  * @}
+  */
 
 /**
   * @}

@@ -2,14 +2,14 @@
   ******************************************************************************
   * @file    stm32f3_discovery.h
   * @author  MCD Application Team
-  * @version V2.1.2
-  * @date    13-November-2015
+  * @version V2.1.4
+  * @date    16-December-2016
   * @brief   This file contains definitions for STM32F3-Discovery's Leds, push-
   *          buttons hardware resources.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -44,22 +44,36 @@
  extern "C" {
 #endif
                                               
-/* Includes ------------------------------------------------------------------*/
-#include "stm32f3xx_hal.h"
-   
 /** @addtogroup BSP
   * @{
   */
-  
-/** @addtogroup STM32F3_DISCOVERY STM32F3_DISCOVERY
-  * @{
-  */
-      
-/** @addtogroup STM32F3_DISCOVERY_LOW_LEVEL STM32F3_DISCOVERY_LOW_LEVEL
+
+/** @defgroup STM32F3_DISCOVERY STM32F3-DISCOVERY
   * @{
   */ 
+ 
+/* Includes ------------------------------------------------------------------*/
+#include "stm32f3xx_hal.h"
+   
+/** @defgroup STM32F3_DISCOVERY_Common STM32F3-DISCOVERY Common
+  * @{
+  */
+  
+/** @defgroup STM32F3_DISCOVERY_Private_Constants Private Constants
+  * @{
+  */
+/**
+* @}
+*/        
+      
+/** @defgroup STM32F3_DISCOVERY_Private_Variables Private Variables
+  * @{
+  */ 
+/**
+* @}
+  */ 
 
-/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL_Exported_Types STM32F3_DISCOVERY_LOW_LEVEL_Exported_Types
+/** @defgroup STM32F3_DISCOVERY_Exported_Types Exported Types
   * @{
   */
 
@@ -102,22 +116,26 @@ typedef enum
   BUTTON_MODE_EXTI = 1
 
 }ButtonMode_TypeDef;
+
+
 /**
   * @}
   */ 
 
-/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL_Exported_Constants STM32F3_DISCOVERY_LOW_LEVEL_Exported_Constants
+/** @defgroup STM32F3_DISCOVERY_Exported_Constants Exported Constants
   * @{
   */ 
 
 /** 
   * @brief  Define for STM32F3_DISCOVERY board  
   */ 
+
 #if !defined (USE_STM32F3_DISCO)
  #define USE_STM32F3_DISCO
 #endif
 
-/** @addtogroup STM32F3_DISCOVERY_LOW_LEVEL_LED STM32F3_DISCOVERY_LOW_LEVEL_LED
+
+/** @defgroup STM32F3_DISCOVERY_LED STM32F3-DISCOVERY LED
   * @{
   */
 #define LEDn                             8
@@ -179,11 +197,12 @@ typedef enum
                                          ((__LED__) == LED8) ? LED8_GPIO_CLK_DISABLE() :\
                                          ((__LED__) == LED9) ? LED9_GPIO_CLK_DISABLE() :\
                                          ((__LED__) == LED10) ? LED10_GPIO_CLK_DISABLE() : 0 )
+
 /**
   * @}
   */ 
   
-/** @addtogroup STM32F3_DISCOVERY_LOW_LEVEL_BUTTON STM32F3_DISCOVERY_LOW_LEVEL_BUTTON
+/** @defgroup STM32F3_DISCOVERY_BUTTON STM32F3-DISCOVERY BUTTON
   * @{
   */  
 #define BUTTONn                          1  
@@ -200,13 +219,15 @@ typedef enum
 #define BUTTONx_GPIO_CLK_ENABLE(__BUTTON__)  do { if ((__BUTTON__) == BUTTON_USER) USER_BUTTON_GPIO_CLK_ENABLE();} while(0)
 
 #define BUTTONx_GPIO_CLK_DISABLE(__BUTTON__) (((__BUTTON__) == BUTTON_USER) ? USER_BUTTON_GPIO_CLK_DISABLE() : 0 )
+
 /**
   * @}
   */ 
 
-/** @addtogroup STM32F3_DISCOVERY_LOW_LEVEL_BUS STM32F3_DISCOVERY_LOW_LEVEL_BUS
+/** @defgroup STM32F3_DISCOVERY_COM STM32F3-DISCOVERY COM
   * @{
   */  
+  
 /*##################### SPIx ###################################*/
 /**
   * @brief  Definition for SPI Interface pins (SPI1 used)
@@ -256,7 +277,8 @@ typedef enum
   * @}
   */ 
 
-  /** @addtogroup STM32F072B_DISCOVERY_LOW_LEVEL_COMPONENT
+
+/** @defgroup STM32F3_DISCOVERY_COMPONENT STM32F3-DISCOVERY COMPONENT
   * @{
   */
 /*##################### GYRO ##########################*/
@@ -315,15 +337,7 @@ typedef enum
   * @}
   */
 
-/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL_Exported_Macros STM32F3_DISCOVERY_LOW_LEVEL_Exported_Macros
-  * @{
-  */  
-/**
-  * @}
-  */ 
-
-
-/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL_Exported_Functions STM32F3_DISCOVERY_LOW_LEVEL_Exported_Functions
+/** @defgroup STM32F3_DISCOVERY_Exported_Functions Exported Functions
   * @{
   */
 uint32_t  BSP_GetVersion(void);

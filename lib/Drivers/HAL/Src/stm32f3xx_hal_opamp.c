@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    stm32f3xx_hal_opamp.c
   * @author  MCD Application Team
-  * @version V1.2.0
-  * @date    13-November-2015
+  * @version V1.4.0
+  * @date    16-December-2016
   * @brief   OPAMP HAL module driver.
   *          This file provides firmware functions to manage the following 
   *          functionalities of the operational amplifiers (OPAMP1,...OPAMP4) 
@@ -37,7 +37,7 @@
            handled by HAL_OPAMP_SelfCalibrate, HAL_OPAMPEx_SelfCalibrateAll
        (++) HAL_OPAMP_SelfCalibrate:
        (++) Runs automatically the calibration in 2 steps. 
-            (90% of VDDA for NMOS transistors, 10% of VDDA for PMOS transistors).
+            (90U% of VDDA for NMOS transistors, 10U% of VDDA for PMOS transistors).
             (As OPAMP is Rail-to-rail input/output, these 2 steps calibration is 
             appropriate and enough in most cases).
        (++) Enables the user trimming mode
@@ -71,38 +71,8 @@
            (Resistor feedback output)
        (++) The OPAMP(s) output(s) can be internally connected to resistor feedback
            output.
-       (++) OPAMP gain is either 2, 4, 8 or 16.
+       (++) OPAMP gain is either 2U, 4U, 8 or 16.
         
-       (#) The OPAMPs non inverting input (both default and secondary) can be 
-           selected among the list shown by table below.
-       
-       (#) The OPAMPs non inverting input (both default and secondary) can be 
-           selected among the list shown by table below.
-       
-   [..] Table 1.  OPAMPs inverting/non-inverting inputs for the STM32F3 devices:
-     
-    +--------------------------------------------------------------+     
-    |                 |        | OPAMP1 | OPAMP2 | OPAMP3 | OPAMP4 |
-    |-----------------|--------|--------|--------|--------|--------|
-    |                 | No conn|   X    |   X    |   X    |   X    |
-    | Inverting Input | VM0    |  PC5   |  PC5   |  PB10  |  PB10  |
-    | (1)             | VM1    |  PA3   |  PA5   |  PB2   |  PD8   |
-    |-----------------|--------|--------|--------|--------|--------|
-    |                 | VP0    |  PA1   |  PA7   |  PB0   |  PB13  |
-    |  Non Inverting  | VP1    |  PA7   |  PD14  |  PB13  |  PD11  |
-    |    Input        | VP2    |  PA3   |  PB0   |  PA1   |  PA4   |
-    |                 | VP3    |  PA5   |  PB14  |  PA5   |  PB11  |
-    +--------------------------------------------------------------+  
-    (1): NA in follower mode.
-           
-   [..] Table 2.  OPAMPs outputs for the STM32F3 devices:
-
-    +--------------------------------------------------------------+     
-    |                 |        | OPAMP1 | OPAMP2 | OPAMP3 | OPAMP4 |
-    |-----------------|--------|--------|--------|--------|--------|
-    | Output          |        |  PA2   |  PA6   |  PB1   |  PB12  |
-    |-----------------|--------|--------|--------|--------|--------|
-
       
             ##### How to use this driver #####
 ================================================================================
@@ -110,7 +80,7 @@
     *** Calibration ***
     ============================================
     [..]
-	To run the opamp calibration self calibration:
+  To run the opamp calibration self calibration:
 
       (#) Start calibration using HAL_OPAMP_SelfCalibrate. 
            Store the calibration results.
@@ -118,7 +88,7 @@
     *** Running mode ***
     ============================================
     [..]
-	To use the opamp, perform the following steps:
+  To use the opamp, perform the following steps:
             
       (#) Fill in the HAL_OPAMP_MspInit() to
       (++) Configure the opamp input AND output in analog mode using 
@@ -159,7 +129,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -186,6 +156,38 @@
   ******************************************************************************  
   */
 
+/*
+  Additional Tables:
+    The OPAMPs non inverting input (both default and secondary) can be 
+    selected among the list shown by table below.
+       
+    The OPAMPs non inverting input (both default and secondary) can be 
+    selected among the list shown by table below.
+       
+    Table 1.  OPAMPs inverting/non-inverting inputs for the STM32F3 devices:
+    +--------------------------------------------------------------+     
+    |                 |        | OPAMP1 | OPAMP2 | OPAMP3 | OPAMP4 |
+    |-----------------|--------|--------|--------|--------|--------|
+    |                 | No conn|   X    |   X    |   X    |   X    |
+    | Inverting Input | VM0    |  PC5   |  PC5   |  PB10  |  PB10  |
+    | (1U)             | VM1    |  PA3   |  PA5   |  PB2   |  PD8   |
+    |-----------------|--------|--------|--------|--------|--------|
+    |                 | VP0    |  PA1   |  PA7   |  PB0   |  PB13  |
+    |  Non Inverting  | VP1    |  PA7   |  PD14  |  PB13  |  PD11  |
+    |    Input        | VP2    |  PA3   |  PB0   |  PA1   |  PA4   |
+    |                 | VP3    |  PA5   |  PB14  |  PA5   |  PB11  |
+    +--------------------------------------------------------------+  
+    (1U): NA in follower mode.
+           
+    Table 2.  OPAMPs outputs for the STM32F3 devices:
+    +--------------------------------------------------------------+     
+    |                 |        | OPAMP1 | OPAMP2 | OPAMP3 | OPAMP4 |
+    |-----------------|--------|--------|--------|--------|--------|
+    | Output          |        |  PA2   |  PA6   |  PB1   |  PB12  |
+    |-----------------|--------|--------|--------|--------|--------|
+
+*/
+
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f3xx_hal.h"
     
@@ -211,7 +213,7 @@
  * @{
  */
 /* CSR register reset value */ 
-#define OPAMP_CSR_RESET_VALUE             ((uint32_t)0x00000000)
+#define OPAMP_CSR_RESET_VALUE             (0x00000000U)
 /**
   * @}
   */
@@ -429,6 +431,9 @@ HAL_StatusTypeDef HAL_OPAMP_DeInit(OPAMP_HandleTypeDef *hopamp)
   */
 __weak void HAL_OPAMP_MspInit(OPAMP_HandleTypeDef *hopamp)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hopamp);
+
   /* NOTE : This function should not be modified, when the callback is needed,
             the HAL_OPAMP_MspInit could be implemented in the user file
    */
@@ -443,6 +448,9 @@ __weak void HAL_OPAMP_MspInit(OPAMP_HandleTypeDef *hopamp)
   */
 __weak void HAL_OPAMP_MspDeInit(OPAMP_HandleTypeDef *hopamp)
 {
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hopamp);
+
   /* NOTE : This function should not be modified, when the callback is needed,
             the HAL_OPAMP_MspDeInit could be implemented in the user file
    */
@@ -562,8 +570,8 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
 
   HAL_StatusTypeDef status = HAL_OK;
   
-  uint32_t trimmingvaluen = 0;
-  uint32_t trimmingvaluep = 0;
+  uint32_t trimmingvaluen = 0U;
+  uint32_t trimmingvaluep = 0U;
   uint32_t delta;
   
   /* Check the OPAMP handle allocation */
@@ -592,7 +600,7 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
       SET_BIT (hopamp->Instance->CSR, OPAMP_CSR_CALON);
   
       /* 1st calibration - N */
-      /* Select 90% VREF */
+      /* Select 90U% VREF */
       MODIFY_REG(hopamp->Instance->CSR, OPAMP_CSR_CALSEL, OPAMP_VREF_90VDDA);
       
       /* Enable the selected opamp */
@@ -600,10 +608,10 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
       
       /* Init trimming counter */    
       /* Medium value */
-      trimmingvaluen = 16; 
-      delta = 8;
+      trimmingvaluen = 16U; 
+      delta = 8U;
       
-      while (delta != 0)
+      while (delta != 0U)
       {
         /* Set candidate trimming */
         MODIFY_REG(hopamp->Instance->CSR, OPAMP_CSR_TRIMOFFSETN, trimmingvaluen<<OPAMP_INPUT_INVERTING);
@@ -611,7 +619,7 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
         /* OFFTRIMmax delay 2 ms as per datasheet (electrical characteristics */ 
         /* Offset trim time: during calibration, minimum time needed between */
         /* two steps to have 1 mV accuracy */
-        HAL_Delay(2);
+        HAL_Delay(2U);
 
         if ((hopamp->Instance->CSR & OPAMP_CSR_OUTCAL) != RESET)
         { 
@@ -624,7 +632,7 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
           trimmingvaluen -= delta;
         }
                       
-        delta >>= 1;
+        delta >>= 1U;
       }
 
       /* Still need to check if righ calibration is current value or un step below */
@@ -634,7 +642,7 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
        /* OFFTRIMmax delay 2 ms as per datasheet (electrical characteristics */ 
        /* Offset trim time: during calibration, minimum time needed between */
        /* two steps to have 1 mV accuracy */
-       HAL_Delay(2);
+       HAL_Delay(2U);
       
       if ((hopamp->Instance->CSR & OPAMP_CSR_OUTCAL) != RESET) 
       { 
@@ -645,15 +653,15 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
       }
        
       /* 2nd calibration - P */
-      /* Select 10% VREF */
+      /* Select 10U% VREF */
       MODIFY_REG(hopamp->Instance->CSR, OPAMP_CSR_CALSEL, OPAMP_VREF_10VDDA);
       
       /* Init trimming counter */    
       /* Medium value */
-      trimmingvaluep = 16; 
-      delta = 8;
+      trimmingvaluep = 16U; 
+      delta = 8U;
       
-      while (delta != 0)
+      while (delta != 0U)
       {
         /* Set candidate trimming */
         MODIFY_REG(hopamp->Instance->CSR, OPAMP_CSR_TRIMOFFSETP, trimmingvaluep<<OPAMP_INPUT_NONINVERTING);
@@ -661,7 +669,7 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
         /* OFFTRIMmax delay 2 ms as per datasheet (electrical characteristics */ 
         /* Offset trim time: during calibration, minimum time needed between */
         /* two steps to have 1 mV accuracy */
-        HAL_Delay(2);
+        HAL_Delay(2U);
 
         if ((hopamp->Instance->CSR & OPAMP_CSR_OUTCAL) != RESET) 
         { 
@@ -673,18 +681,18 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
           trimmingvaluep -= delta;
         }
                       
-        delta >>= 1;
+        delta >>= 1U;
       }
       
       /* Still need to check if righ calibration is current value or un step below */
-      /* Indeed the first value that causes the OUTCAL bit to change from 1 to 0 */
+      /* Indeed the first value that causes the OUTCAL bit to change from 1 to 0U */
       /* Set candidate trimming */
       MODIFY_REG(hopamp->Instance->CSR, OPAMP_CSR_TRIMOFFSETP, trimmingvaluep<<OPAMP_INPUT_NONINVERTING);
 
        /* OFFTRIMmax delay 2 ms as per datasheet (electrical characteristics */ 
        /* Offset trim time: during calibration, minimum time needed between */
        /* two steps to have 1 mV accuracy */
-       HAL_Delay(2);
+       HAL_Delay(2U);
       
       if ((hopamp->Instance->CSR & OPAMP_CSR_OUTCAL) != RESET)
       { 
@@ -834,8 +842,8 @@ HAL_OPAMP_StateTypeDef HAL_OPAMP_GetState(OPAMP_HandleTypeDef *hopamp)
 
 OPAMP_TrimmingValueTypeDef HAL_OPAMP_GetTrimOffset (OPAMP_HandleTypeDef *hopamp, uint32_t trimmingoffset)
 {
-  uint32_t oldusertrimming = 0;
-  OPAMP_TrimmingValueTypeDef  oldtrimmingvaluep = 0, oldtrimmingvaluen = 0, trimmingvalue = 0;
+  uint32_t oldusertrimming = 0U;
+  OPAMP_TrimmingValueTypeDef  oldtrimmingvaluep = 0U, oldtrimmingvaluen = 0U, trimmingvalue = 0U;
   
   /* Check the OPAMP handle allocation */
   /* Value can be retrieved in HAL_OPAMP_STATE_READY state */

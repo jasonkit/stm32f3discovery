@@ -2,14 +2,14 @@
   ******************************************************************************
   * @file    stm32f3_discovery.c
   * @author  MCD Application Team
-  * @version V2.1.2
-  * @date    13-November-2015
+  * @version V2.1.4
+  * @date    16-December-2016
   * @brief   This file provides set of firmware functions to manage Leds and
   *          push-button available on STM32F3-DISCOVERY Kit from STMicroelectronics.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -44,32 +44,24 @@
   */ 
 
 /** @addtogroup STM32F3_DISCOVERY
-  * @{
-  */   
-    
-/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL STM32F3_DISCOVERY_LOW_LEVEL
   * @brief This file provides set of firmware functions to manage Leds and push-button
   *        available on STM32F3-Discovery Kit from STMicroelectronics.
   * @{
   */ 
-
-/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL_Private_TypesDefinitions STM32F3_DISCOVERY_LOW_LEVEL_Private_TypesDefinitions
+/** @addtogroup STM32F3_DISCOVERY_Common
   * @{
   */ 
-/**
-  * @}
-  */ 
 
-
-/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL_Private_Defines STM32F3_DISCOVERY_LOW_LEVEL_Private_Defines
+/** @addtogroup STM32F3_DISCOVERY_Private_Constants
   * @{
   */ 
+
 /**
- * @brief STM32F3 DISCOVERY BSP Driver version number V2.1.2
+ * @brief STM32F3 DISCOVERY BSP Driver version number V2.1.4
    */
 #define __STM32F3_DISCO_BSP_VERSION_MAIN   (0x02) /*!< [31:24] main version */
 #define __STM32F3_DISCO_BSP_VERSION_SUB1   (0x01) /*!< [23:16] sub1 version */
-#define __STM32F3_DISCO_BSP_VERSION_SUB2   (0x02) /*!< [15:8]  sub2 version */
+#define __STM32F3_DISCO_BSP_VERSION_SUB2   (0x04) /*!< [15:8]  sub2 version */
 #define __STM32F3_DISCO_BSP_VERSION_RC     (0x00) /*!< [7:0]  release candidate */
 #define __STM32F3_DISCO_BSP_VERSION        ((__STM32F3_DISCO_BSP_VERSION_MAIN << 24)\
                                             |(__STM32F3_DISCO_BSP_VERSION_SUB1 << 16)\
@@ -79,17 +71,11 @@
   * @}
   */ 
 
-
-/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL_Private_Macros STM32F3_DISCOVERY_LOW_LEVEL_Private_Macros
+  /** @addtogroup STM32F3_DISCOVERY_Private_Variables
   * @{
   */ 
 /**
-  * @}
-  */ 
-
-
-/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL_Private_Variables STM32F3_DISCOVERY_LOW_LEVEL_Private_Variables
-  * @{
+ * @brief LED variables
   */ 
 GPIO_TypeDef* LED_PORT[LEDn] = {LED3_GPIO_PORT, LED4_GPIO_PORT, LED5_GPIO_PORT, LED6_GPIO_PORT,
                                  LED7_GPIO_PORT, LED8_GPIO_PORT, LED9_GPIO_PORT, LED10_GPIO_PORT};
@@ -97,10 +83,16 @@ GPIO_TypeDef* LED_PORT[LEDn] = {LED3_GPIO_PORT, LED4_GPIO_PORT, LED5_GPIO_PORT, 
 const uint16_t LED_PIN[LEDn] = {LED3_PIN, LED4_PIN, LED5_PIN, LED6_PIN,
                                  LED7_PIN, LED8_PIN, LED9_PIN, LED10_PIN};
 
+/**
+ * @brief BUTTON variables
+ */
 GPIO_TypeDef* BUTTON_PORT[BUTTONn] = {USER_BUTTON_GPIO_PORT}; 
 const uint16_t BUTTON_PIN[BUTTONn] = {USER_BUTTON_PIN}; 
 const uint8_t BUTTON_IRQn[BUTTONn] = {USER_BUTTON_EXTI_IRQn};
 
+/**
+ * @brief BUS variables
+ */
 #ifdef HAL_SPI_MODULE_ENABLED
 uint32_t SpixTimeout = SPIx_TIMEOUT_MAX;    /*<! Value of Timeout when SPI communication fails */
 static SPI_HandleTypeDef SpiHandle;
@@ -115,8 +107,7 @@ uint32_t I2cxTimeout = I2Cx_TIMEOUT_MAX;    /*<! Value of Timeout when I2C commu
   * @}
   */ 
 
-
-/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL_Private_FunctionPrototypes STM32F3_DISCOVERY_LOW_LEVEL_Private_FunctionPrototypes
+/** @defgroup STM32F3_DISCOVERY_BUS Bus Operation functions
   * @{
   */ 
 #ifdef HAL_I2C_MODULE_ENABLED
@@ -155,22 +146,18 @@ uint8_t   COMPASSACCELERO_IO_Read(uint16_t DeviceAddr, uint8_t RegisterAddr);
   * @}
   */ 
 
-/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL_Private_Functions STM32F3_DISCOVERY_LOW_LEVEL_Private_Functions
+/** @addtogroup STM32F3_DISCOVERY_Exported_Functions
   * @{
   */ 
 
 /**
-  * @brief  This method returns the STM32F3 DISCOVERY BSP Driver revision
+  * @brief  This method returns the STM32F3-DISCOVERY BSP Driver revision
   * @retval version : 0xXYZR (8bits for each decimal, R for RC)
   */
 uint32_t BSP_GetVersion(void)
 {
   return __STM32F3_DISCO_BSP_VERSION;
 }
-
-/** @defgroup STM32F3_DISCOVERY_LOW_LEVEL_LED_Functions STM32F3_DISCOVERY_LOW_LEVEL_LED_Functions
-  * @{
-  */ 
 
 /**
   * @brief  Configures LED GPIO.
@@ -261,13 +248,6 @@ void BSP_LED_Toggle(Led_TypeDef Led)
   HAL_GPIO_TogglePin(LED_PORT[Led], LED_PIN[Led]);
 }
 
-/**
-  * @}
-  */ 
-
-/** @defgroup STM32F3348_DISCOVERY_LOW_LEVEL_BUTTON_Functions STM32F3348_DISCOVERY_LOW_LEVEL_BUTTON_Functions
-  * @{
-  */ 
 
 /**
   * @brief  Configures Push Button GPIO and EXTI Line.
@@ -328,6 +308,9 @@ uint32_t BSP_PB_GetState(Button_TypeDef Button)
   * @}
   */ 
 
+/** @addtogroup STM32F3_DISCOVERY_BUS
+  * @{
+  */ 
 /******************************************************************************
                             BUS OPERATIONS
 *******************************************************************************/
@@ -534,6 +517,13 @@ static void SPIx_MspInit(SPI_HandleTypeDef *hspi)
   GPIO_InitStructure.Alternate = DISCOVERY_SPIx_AF;
   HAL_GPIO_Init(DISCOVERY_SPIx_GPIO_PORT, &GPIO_InitStructure);      
 }
+/**
+  * @}
+  */ 
+
+/** @defgroup STM32F3_DISCOVERY_LINK_OPERATIONS Link Operation functions
+  * @{
+  */
 
 /******************************************************************************
                             LINK OPERATIONS
@@ -748,4 +738,4 @@ uint8_t COMPASSACCELERO_IO_Read(uint16_t DeviceAddr, uint8_t RegisterAddr)
   * @}
   */ 
 
-/******************* (C) COPYRIGHT 2015 STMicroelectronics *****END OF FILE****/
+/******************* (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

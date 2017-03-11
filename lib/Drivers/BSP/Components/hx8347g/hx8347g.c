@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    hx8347g.c
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    02-December-2014
+  * @version V1.1.1
+  * @date    16-February-2016
   * @brief   This file includes the LCD driver for HX8347G LCD.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -125,8 +125,12 @@ void hx8347g_Init(void)
   if(Is_hx8347g_Initialized == 0)
   {
     Is_hx8347g_Initialized = 1;
+    
     /* Initialise HX8347G low level bus layer --------------------------------*/
     LCD_IO_Init();
+    
+    /* HX8347G requests 120ms (worst case) after reset */
+    LCD_Delay(120);
     
     /* Driving ability setting */
     hx8347g_WriteReg(LCD_REG_234, 0x00);
@@ -266,6 +270,9 @@ uint16_t hx8347g_ReadID(void)
   if(Is_hx8347g_Initialized == 0)
   {
     LCD_IO_Init();
+
+    /* HX8347G requests 120ms (worst case) after reset */
+    LCD_Delay(120);
   }
   return (hx8347g_ReadReg(0x00));
 }
@@ -300,7 +307,7 @@ void hx8347g_WritePixel(uint16_t Xpos, uint16_t Ypos, uint16_t RGBCode)
   LCD_IO_WriteReg(LCD_REG_34);
 
   /* Write 16-bit GRAM Reg */
-  LCD_IO_WriteData((uint8_t*)&RGBCode, 2);
+  LCD_IO_WriteMultipleData((uint8_t*)&RGBCode, 2);
 }
 
 /**
@@ -331,16 +338,19 @@ void hx8347g_WriteReg(uint8_t LCDReg, uint16_t LCDRegValue)
   LCD_IO_WriteReg(LCDReg);
   
   /* Write 16-bit GRAM Reg */
-  LCD_IO_WriteData((uint8_t*)&LCDRegValue, 2);
+  LCD_IO_WriteMultipleData((uint8_t*)&LCDRegValue, 2);
 }
 
 /**
   * @brief  Reads the selected LCD Register.
-* @param  LCDReg: address of the selected register.
+  * @param  LCDReg: address of the selected register.
   * @retval LCD Register Value.
   */
 uint16_t hx8347g_ReadReg(uint8_t LCDReg)
 {
+  /* Write 16-bit Index (then Read Reg) */
+  LCD_IO_WriteReg(LCDReg);
+
   /* Read 16-bit Reg */
   return (LCD_IO_ReadData(LCDReg));
 }
@@ -396,7 +406,7 @@ void hx8347g_DrawHLine(uint16_t RGBCode, uint16_t Xpos, uint16_t Ypos, uint16_t 
     ArrayRGB[i] = RGBCode;
   }  
 
-  LCD_IO_WriteData((uint8_t*)&ArrayRGB[0], Length * 2);
+  LCD_IO_WriteMultipleData((uint8_t*)&ArrayRGB[0], Length * 2);
 }
 
 /**
@@ -424,7 +434,7 @@ void hx8347g_DrawVLine(uint16_t RGBCode, uint16_t Xpos, uint16_t Ypos, uint16_t 
   }
   
   /* Write 16-bit GRAM Reg */
-  LCD_IO_WriteData((uint8_t*)&ArrayRGB[0], Length * 2);
+  LCD_IO_WriteMultipleData((uint8_t*)&ArrayRGB[0], Length * 2);
 }
 
 /**
@@ -455,7 +465,7 @@ void hx8347g_DrawBitmap(uint16_t Xpos, uint16_t Ypos, uint8_t *pbmp)
   /* Prepare to write GRAM */
   LCD_IO_WriteReg(LCD_REG_34);
  
-  LCD_IO_WriteData((uint8_t*)pbmp, size*2);
+  LCD_IO_WriteMultipleData((uint8_t*)pbmp, size*2);
  
   /* Set GRAM write direction and BGR = 0 */
   /* Memory access control: MY = 1, MX = 1, MV = 1, ML = 0 */
