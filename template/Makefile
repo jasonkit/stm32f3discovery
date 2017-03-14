@@ -6,6 +6,7 @@ CUSTOM_DEFINE:=
 FREERTOS_MODULE := tasks queue list timers
 HAL_MODULE := cortex dma flash gpio rcc rcc_ex tim tim_ex
 BSP_MODULE :=
+JKIT_MODULE :=
 
 # FreeRTOS memory management, ref: http://www.freertos.org/a00111.html
 FREERTOS_MEMMANG := heap_1
@@ -28,6 +29,11 @@ space +=
 
 COMMON_DIR := lib/common
 INC_PATH += $(COMMON_DIR)/include
+
+# jkit setting
+JKIT_PATH := lib/jkit/
+INC_PATH += $(JKIT_PATH)/include
+JKIT_CFILES := $(addprefix $(JKIT_PATH)/src/,$(addsuffix .c,$(JKIT_MODULE)))
 
 # CMSIS setting
 CMSIS_PATH := lib/CMSIS/
@@ -73,7 +79,7 @@ vpath %.h include $(COMMON_DIR)
 
 default: $(BUILD_DIR)/$(TARGET).bin
 
-SOURCES := $(wildcard src/*.c) $(FREERTOS_CFILES) $(DRIVER_CFILES) $(HAL_CFILES) $(BSP_CFILES)
+SOURCES := $(wildcard src/*.c) $(FREERTOS_CFILES) $(DRIVER_CFILES) $(HAL_CFILES) $(BSP_CFILES) $(JKIT_CFILES)
 OBJECTS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(SOURCES))
 DEPENDS := $(patsubst %.c,$(BUILD_DIR)/%.d,$(SOURCES))
 

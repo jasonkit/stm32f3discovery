@@ -1,10 +1,11 @@
 #ifndef __UART_H__
 #define __UART_H__
 
-#include "stm32f3xx_hal.h"
-#include "stm32f3_discovery.h"
-#include "ringbuf.h"
 #include "cmsis_os.h"
+#include "stm32f3_discovery.h"
+#include "stm32f3xx_hal.h"
+
+#include "jkit/ringbuf.h"
 
 #define UART_NUM_DEVICE 5
 

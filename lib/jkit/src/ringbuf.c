@@ -1,4 +1,4 @@
-#include "ringbuf.h"
+#include "jkit/ringbuf.h"
 #include <string.h>
 
 uint16_t ringbuf_remaining(struct RingBuf* rbuf, bool useMutex) {

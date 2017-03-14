@@ -1,4 +1,4 @@
-#include "uart.h"
+#include "jkit/uart.h"
 
 struct UartContext *gUartContexts[UART_NUM_DEVICE];
 osThreadId uart_task_handle;

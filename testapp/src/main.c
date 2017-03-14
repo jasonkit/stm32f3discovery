@@ -1,6 +1,6 @@
 #include "main.h"
-#include "uart.h"
 #include "cmsis_os.h"
+#include "jkit/uart.h"
 
 osThreadId main_task_handle;
 
